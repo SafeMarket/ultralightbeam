@@ -1,0 +1,35 @@
+{
+  "name": "solquester",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/SafeMarket/solquester.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SafeMarket/solquester/issues"
+  },
+  "homepage": "https://github.com/SafeMarket/solquester#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "ethereumjs-testrpc": "^3.0.2",
+    "glob": "^7.1.1",
+    "mocha": "^3.1.2",
+    "solc": "^0.4.4"
+  },
+  "dependencies": {
+    "amorph": "0.0.5",
+    "amorph-base58": "0.0.1",
+    "amorph-hex": "0.0.2",
+    "lodash": "^4.17.2",
+    "q": "^1.4.1",
+    "web3": "^0.17.0-beta"
+  }
+}
