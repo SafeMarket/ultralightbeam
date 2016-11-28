@@ -1,56 +1,13 @@
-const glob = require('glob')
-const fs = require('fs')
-const solc = require('solc')
 const _ = require('lodash')
-const TestRPC = require('ethereumjs-testrpc')
-const Solquester = require('../')
+const Solbuilder = require('../lib/Solbuilder')
 const Amorph = require('../modules/Amorph')
-const chai = require('chai')
+const chai = require('../modules/chai')
+const solquester = require('../modules/solquester')
+const TransactionReceipt = require('../lib/TransactionReceipt')
 
-const expect = chai.expect
+const contracts = require('./contracts')
 
-chai.use((chai, utils) => {
-  utils.addChainableMethod(chai.Assertion.prototype, 'amorphTo', function (form) {
-    this._obj = this._obj.to(form)
-  });
-})
-chai.use(require('chai-as-promised'))
-chai.should()
-
-const sources = {}
-const contracts = {}
-
-const solquester = new Solquester(TestRPC.provider({
-  blocktime: 1
-}))
-
-describe('contracts', () => {
-
-  it('should get globbed', () => {
-    glob.sync('contracts/**/*.sol').forEach((filePath) => {
-      const fileName = _.last(filePath.split('/'))
-      sources[fileName] = fs.readFileSync(filePath, 'utf-8')
-    })
-    
-  })
-
-  it('should get solc', () => {
-   const solcOutput = solc.compile({ sources })
-   if (solcOutput.errors && solcOutput.errors.length > 0) {
-    throw new Error(solcOutput.errors[0])
-   }
-   _.forEach(solcOutput.contracts, (_contract, name) => {
-    contracts[name] = {
-      abi: JSON.parse(_contract.interface),
-      bytecode: new Amorph(_contract.bytecode, 'hex'),
-      runtimeBytecode: new Amorph(_contract.runtimeBytecode, 'hex')
-    }
-   })
-  })
-
-})
-
-describe('Solquester', () => {
+describe('solquester', () => {
 
   const accounts = []
   const balances = []
@@ -67,11 +24,11 @@ describe('Solquester', () => {
     it('should get', () => {
    
       return solquester
-        .getAccounts()
+        .eth.getAccounts()
         .withHandler((_accounts) => {
           accounts.push.apply(accounts, _accounts)
         })
-        .batch.execution.promise.should.be.fulfilled
+        .promise.should.be.fulfilled
 
     })
 
@@ -84,11 +41,12 @@ describe('Solquester', () => {
       accounts.should.have.length(10)
       accounts.forEach((account) => {
         account.should.be.instanceof(Amorph)
+        account.to('hex.prefixed').should.be.an.address()
       })
     })
 
-    it('should set solquester.account to account0', () => {
-      solquester.account = accounts[0]
+    it('should set solquester.defaults.from to account0', () => {
+      solquester.defaults.from = accounts[0]
     })
 
   })
@@ -99,7 +57,7 @@ describe('Solquester', () => {
 
       accounts.forEach((account) => {
         solquester
-          .getBalance(account)
+          .eth.getBalance(account)
           .withHandler((balance) => {
             balances.push(balance)
           })
@@ -118,6 +76,7 @@ describe('Solquester', () => {
       balances.should.have.length(10)
       balances.forEach((balance) => {
         balance.should.be.instanceof(Amorph)
+        balance.to('hex.prefixed').should.not.be.zeros()
       })
     })
 
@@ -129,10 +88,17 @@ describe('Simple', () => {
 
   let transactionHash
   let transactionReceipt
+  let simpleSolbuilder
+  let address
+
+  it('should create simpleSolbuilder', () => {
+    simpleBuilder = new Solbuilder(contracts.Simple.abi, contracts.Simple.bytecode)
+  })
+
 
   it('should deploy', () => {
     return solquester
-      .deploy(contracts.Simple.abi, contracts.Simple.bytecode, [])
+      .add(simpleBuilder.deploy([]))
       .withHandler((_transactionHash) => {
         transactionHash = _transactionHash
       })
@@ -144,7 +110,7 @@ describe('Simple', () => {
   })
 
   it('getTransactionReceipt should be null', () => {
-    return solquester.getTransactionReceipt(transactionHash).promise.should.eventually.equal(null)
+    return solquester.eth.getTransactionReceipt(transactionHash).promise.should.eventually.equal(null)
   })
 
   it('should wait a second', (done) => {
@@ -152,15 +118,32 @@ describe('Simple', () => {
   })
 
   it('getTransactionReceipt should be instanceof TransactionReceipt', () => {
-    return solquester.getTransactionReceipt(transactionHash).withHandler((_transactionReciept) => {
+    return solquester.eth.getTransactionReceipt(transactionHash).withHandler((_transactionReciept) => {
       transactionReceipt = _transactionReciept
-    }).promise.should.eventually.be.instanceof(Solquester.TransactionReceipt)
+      address = transactionReceipt.contractAddress
+    }).promise.should.eventually.be.instanceof(TransactionReceipt)
+  })
+
+  it('transactionReceipt.address should be address', () => {
+    address.to('hex.prefixed').should.be.an.address()
   })
 
   it('getCode should deep equal runtimeBytecode', () => {
     return solquester
-      .getCode(transactionReceipt.contractAddress)
+      .eth.getCode(address)
       .promise.should.eventually.amorphTo('hex').equal(contracts.Simple.runtimeBytecode.to('hex'))
+  })
+
+  it('var1 should be equal to 1', () => {
+    return solquester
+      .add(simpleBuilder.get(address, 'var1()'))
+      .promise.should.eventually.amorphTo('number').equal(1)
+  })
+
+  it('var2 should be equal to 2', () => {
+    return solquester
+      .add(simpleBuilder.get(address, 'var2()'))
+      .promise.should.eventually.amorphTo('number').equal(2)
   })
 
 })
