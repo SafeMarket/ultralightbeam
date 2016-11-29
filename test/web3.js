@@ -1,4 +1,4 @@
-const solquester = require('../modules/solquester')
+const solquester = require('./solquester')
 const Amorph = require('../modules/Amorph')
 
 describe('web3', () => {
