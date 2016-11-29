@@ -6,7 +6,7 @@ describe('net', () => {
   describe('getListening', () => {
 
     it('should be true', () => {
-      return solquester.net.getListening().promise.should.eventually.equal(true)
+      return solquester.net.getListening().should.eventually.equal(true)
     })
 
   })
@@ -14,7 +14,7 @@ describe('net', () => {
   describe('getPeerCount', () => {
 
     it('should be 0', () => {
-      return solquester.net.getPeerCount().promise.should.eventually.equal(0)
+      return solquester.net.getPeerCount().should.eventually.equal(0)
     })
     
   })
@@ -22,7 +22,7 @@ describe('net', () => {
   describe('getVersion', () => {
 
     it('should be a string', () => {
-      return solquester.net.getVersion().promise.should.eventually.be.a('string')
+      return solquester.net.getVersion().should.eventually.be.a('string')
     })
     
   })

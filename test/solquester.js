@@ -17,10 +17,10 @@ describe('solquester', () => {
   it('should set solquester.defaults.from', () => {
     return solquester
       .eth.getAccounts()
-      .withHandler((_accounts) => {
+      .then((_accounts) => {
         solquester.defaults.from = _accounts[0]
       })
-      .promise
+      .should.be.fulfilled
   })
 
 })

@@ -17,10 +17,10 @@ describe('eth', () => {
    
       return solquester
         .eth.getAccounts()
-        .withHandler((_accounts) => {
+        .then((_accounts) => {
           accounts = _accounts
         })
-        .promise.should.be.fulfilled
+        .should.be.fulfilled
 
     })
 
@@ -41,39 +41,16 @@ describe('eth', () => {
    
       return solquester
         .eth.getBlockNumber()
-        .withHandler((_blockNumber) => {
+        .then((_blockNumber) => {
           blockNumber = _blockNumber
         })
-        .promise.should.be.fulfilled
+        .should.be.fulfilled
 
     })
 
     it('should be an integer', () => {
-      blockNumber.should.be.a('number')
-      const remainder = blockNumber % 1
-      remainder.should.equal(0)
-    })
-
-  })
-
-  describe('getBlockNumber', () => {
-
-    let blockNumber
-  
-    it('should be fulfilled', () => {
-   
-      return solquester
-        .eth.getBlockNumber()
-        .withHandler((_blockNumber) => {
-          blockNumber = _blockNumber
-        })
-        .promise.should.be.fulfilled
-
-    })
-
-    it('should be an integer', () => {
-      blockNumber.should.be.a('number')
-      const remainder = blockNumber % 1
+      blockNumber.should.be.instanceof(Amorph)
+      const remainder = blockNumber.to('number') % 1
       remainder.should.equal(0)
     })
 
@@ -86,12 +63,12 @@ describe('eth', () => {
       const promises = []
 
       accounts.forEach((account) => {
-        solquester
+        const promise = solquester
           .eth.getBalance(account)
-          .withHandler((balance) => {
+          .then((balance) => {
             balances.push(balance)
           })
-        promises.push(solquester.promise)
+        promises.push(promise)
       })
 
       promises.push(solquester.batch.execution.promise)
@@ -130,10 +107,10 @@ describe('eth', () => {
     )
     let address
 
-    it ('should deploy Storage contract', () => {
+    it('should deploy Storage contract', () => {
       return solquester
         .add(storageSolbuilder.deploy())
-        .promise.then((transactionHash) => {
+        .then((transactionHash) => {
           return solquester
             .pollForTransactionReciept(transactionHash)
             .then((transactionReciept) => {
@@ -144,21 +121,21 @@ describe('eth', () => {
         }).should.be.fulfilled
     })
 
-    it ('getCode should not be empty ', () => {
+    it('getCode should not be empty ', () => {
       return solquester
         .eth.getCode(address)
-        .promise.should.eventually.amorphTo('number').not.equal(0)
+        .should.eventually.amorphTo('number').not.equal(0)
     })
 
-    it ('should get pos0 ', () => {
+    it('should get pos0 ', () => {
       // 0 should work, but doesn't because of testrpc issue https://github.com/ethereumjs/testrpc/issues/133
       const positionArray = new Array(32).fill(0)
       return solquester
         .eth.getStorageAt(address, new Amorph(positionArray, 'array'))
-        .promise.should.eventually.amorphTo('number').equal(1234)
+        .should.eventually.amorphTo('number').equal(1234)
     })
 
-    it ('should get pos1[msg.sender] ', () => {
+    it('should get pos1[msg.sender] ', () => {
       const keyArray = []
         .concat(new Array(12).fill(0))
         .concat(solquester.defaults.from.to('array'))
@@ -170,8 +147,52 @@ describe('eth', () => {
 
       return solquester
         .eth.getStorageAt(address, position)
-        .promise.should.eventually.amorphTo('number').equal(5678)
+        .should.eventually.amorphTo('number').equal(5678)
     })
+
+  })
+
+  describe('getTransactionCount', () => {
+
+    it('account0 should be instanceof Amorph', () => {
+      return solquester.eth.getTransactionCount(accounts[0]).should.eventually.be.instanceof(Amorph)
+    })
+
+    it('account0 should be greater than zero', () => {
+      return solquester.eth.getTransactionCount(accounts[0]).should.eventually.amorphTo('number').be.greaterThan(0)
+    })
+
+    it('account1 should be zero', () => {
+      return solquester.eth.getTransactionCount(accounts[1]).should.eventually.amorphTo('number').equal(0)
+    })
+
+  })
+
+  describe('getBlockTransactionCount...', () => {
+    
+    let blockNumber
+    let block
+
+    it('should get blockNumber', () => {
+      return solquester.eth.getBlockNumber().then((_blockNumber) => { blockNumber = _blockNumber })
+    })
+
+    it('should get block', () => {
+      return solquester.eth.getBlockByNumber(blockNumber, true).then((_block) => { block = _block })
+    })
+
+    describe('..ByNumber', () => {
+      it('should be 1', () => {
+        return solquester.eth.getBlockTransactionCountByNumber(blockNumber).should.eventually.amorphTo('number').equal(1)
+      })
+    })
+
+    describe('..ByHash', () => {
+      it('should be 1', () => {
+        return solquester.eth.getBlockTransactionCountByHash(block.hash).should.eventually.amorphTo('number').equal(1)
+      })
+    })
+
 
   })
 
