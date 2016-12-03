@@ -20,7 +20,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-web3-bindings": "^0.1.0",
-    "ethereumjs-testrpc": "^3.0.2",
+    "ethereumjs-testrpc": "git+https://github.com/ethereumjs/testrpc.git#2b8f519dc1dbae215369f501b2b1c9a6549d8863",
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
     "solc": "^0.4.4"
@@ -29,7 +29,9 @@
     "amorph": "0.0.7",
     "amorph-base58": "0.0.1",
     "amorph-bignumber": "0.0.1",
+    "amorph-buffer": "0.0.1",
     "amorph-hex": "0.0.2",
+    "ethereumjs-tx": "^1.1.4",
     "lodash": "^4.17.2",
     "q": "^1.4.1",
     "require-directory": "^2.1.1",

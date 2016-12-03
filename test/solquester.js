@@ -5,9 +5,16 @@ const chai = require('../modules/chai')
 const TransactionReceipt = require('../lib/TransactionReceipt')
 const Solquester = require('../lib/Solquester')
 const TestRPC = require('ethereumjs-testrpc')
+const personas = require('../modules/personas')
 
 const solquester = new Solquester(TestRPC.provider({
-  blocktime: 3
+  blocktime: 3,
+  accounts: personas.map((persona) => {
+    return {
+      balance: persona.balance.to('number'),
+      secretKey: persona.privateKey.to('hex.prefixed')
+    }
+  })
 }))
 solquester.defaults.gas = new Amorph(3000000, 'number')
 solquester.defaults.gasPrice = new Amorph(20000000000, 'number')
