@@ -9,6 +9,7 @@ const TransactionReceipt = require('../lib/TransactionReceipt')
 const personas = require('../modules/personas')
 const Block = require('../lib/Block')
 const SolidityOutput = require('../lib/SolidityOutput')
+const blockFlags = require('../lib/blockFlags')
 
 describe('eth', () => {
 
@@ -74,7 +75,7 @@ describe('eth', () => {
 
       accounts.forEach((account) => {
         const promise = solquester
-          .eth.getBalance(account)
+          .eth.getBalance(account, blockFlags.latest)
           .then((balance) => {
             balances.push(balance)
           })
@@ -107,7 +108,7 @@ describe('eth', () => {
       // 0 should work, but doesn't because of testrpc issue https://github.com/ethereumjs/testrpc/issues/133
       const positionArray = new Array(32).fill(0)
       return solquester
-        .eth.getStorageAt(storageContract.address, new Amorph(positionArray, 'array'))
+        .eth.getStorageAt(storageContract.address, new Amorph(positionArray, 'array'), blockFlags.latest)
         .should.eventually.amorphTo('number').equal(1234)
     })
 
@@ -122,7 +123,7 @@ describe('eth', () => {
       const position = new Amorph(positionHex, 'hex')
 
       return solquester
-        .eth.getStorageAt(storageContract.address, position)
+        .eth.getStorageAt(storageContract.address, position, blockFlags.latest)
         .should.eventually.amorphTo('number').equal(5678)
     })
 
@@ -131,27 +132,27 @@ describe('eth', () => {
   describe('getTransactionCount', () => {
 
     it('account0 should be instanceof Amorph', () => {
-      return solquester.eth.getTransactionCount(accounts[0]).should.eventually.be.instanceof(Amorph)
+      return solquester.eth.getTransactionCount(accounts[0], blockFlags.latest).should.eventually.be.instanceof(Amorph)
     })
 
     it('account0 should be greater than zero', () => {
-      return solquester.eth.getTransactionCount(accounts[0]).should.eventually.amorphTo('number').be.greaterThan(0)
+      return solquester.eth.getTransactionCount(accounts[0], blockFlags.latest).should.eventually.amorphTo('number').be.greaterThan(0)
     })
 
     it('account1 should be zero', () => {
-      return solquester.eth.getTransactionCount(accounts[1]).should.eventually.amorphTo('number').equal(0)
+      return solquester.eth.getTransactionCount(accounts[1], blockFlags.latest).should.eventually.amorphTo('number').equal(0)
     })
 
   })
 
   describe('getCode', () => {
     it('should be zeros for account0', () => {
-      return solquester.eth.getCode(accounts[0]).should.eventually.amorphTo('number').equal(0)
+      return solquester.eth.getCode(accounts[0], blockFlags.latest).should.eventually.amorphTo('number').equal(0)
     })
 
     it('should not be empty for storageContract.address ', () => {
       return solquester
-        .eth.getCode(storageContract.address)
+        .eth.getCode(storageContract.address, blockFlags.latest)
         .should.eventually.amorphEqual(storageContract.runtimeBytecode)
     })
   })
@@ -197,11 +198,11 @@ describe('eth', () => {
     })
 
     it('account0 balance should have dropped by 1', () => {
-      return solquester.eth.getBalance(accounts[0]).should.eventually.amorphTo('number').equal(balances[0].to('number') - 1)
+      return solquester.eth.getBalance(accounts[0], blockFlags.latest).should.eventually.amorphTo('number').equal(balances[0].to('number') - 1)
     })
 
     it('account1 balance should have increased by 1', () => {
-      return solquester.eth.getBalance(accounts[1]).should.eventually.amorphTo('number').equal(balances[1].to('number') + 1)
+      return solquester.eth.getBalance(accounts[1], blockFlags.latest).should.eventually.amorphTo('number').equal(balances[1].to('number') + 1)
     })
 
 
@@ -223,8 +224,7 @@ describe('eth', () => {
     })
 
     it('contract address code should be correct', () => {
-      if (!contractAddress1) { return }
-      return solquester.eth.getCode(contractAddress1).should.eventually.amorphEqual(storageContract.runtimeBytecode)
+      return solquester.eth.getCode(contractAddress1, blockFlags.latest).should.eventually.amorphEqual(storageContract.runtimeBytecode)
     })
 
   })
@@ -247,7 +247,8 @@ describe('eth', () => {
     })
 
     it('contract address code should be correct', () => {
-      return solquester.eth.getCode(contractAddress2).should.eventually.amorphEqual(storageContract.runtimeBytecode)
+      if (!contractAddress2) return
+      return solquester.eth.getCode(contractAddress2, blockFlags.latest).should.eventually.amorphEqual(storageContract.runtimeBytecode)
     })
 
   })
@@ -269,7 +270,7 @@ describe('eth', () => {
         to: accounts[1],
         value: new Amorph(1, 'number')
       })
-      return solquester.eth.estimateGas(transactionRequest).should.eventually.amorphTo('number').equal(21000)
+      return solquester.eth.estimateGas(transactionRequest, blockFlags.latest).should.eventually.amorphTo('number').equal(21000)
     })
 
   })
@@ -311,7 +312,7 @@ describe('eth', () => {
     let transaction
 
     it('should be fulfilled', () => {
-      return solquester.eth.getTransactionByHash(block1ByNumber.transactionHashes[0]).then((_transaction) => {
+      return solquester.eth.getTransactionByHash(block1ByNumber.transactionHashes[0], blockFlags.latest).then((_transaction) => {
         transaction = _transaction
       })
     })
