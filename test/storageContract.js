@@ -4,7 +4,8 @@ const solc = require('solc')
 const Amorph = require('../modules/Amorph')
 
 const storageContract = {
-  sol: `contract Storage {
+  sol: `pragma solidity ^0.4.4;
+        contract Storage {
         uint public pos0;
         mapping(address => uint) pos1;
 
@@ -15,7 +16,7 @@ const storageContract = {
       }`
 }
 
-const solcOutput = solc.compile(storageContract.sol).contracts.Storage
+const solcOutput = solc.compile(storageContract.sol, 1).contracts.Storage
 
 storageContract.abi = JSON.parse(solcOutput.interface)
 storageContract.bytecode = new Amorph(solcOutput.bytecode, 'hex')

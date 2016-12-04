@@ -8,6 +8,7 @@ const Transaction = require('../lib/Transaction')
 const TransactionReceipt = require('../lib/TransactionReceipt')
 const personas = require('../modules/personas')
 const Block = require('../lib/Block')
+const SolidityOutput = require('../lib/SolidityOutput')
 
 describe('eth', () => {
 
@@ -222,6 +223,7 @@ describe('eth', () => {
     })
 
     it('contract address code should be correct', () => {
+      if (!contractAddress1) { return }
       return solquester.eth.getCode(contractAddress1).should.eventually.amorphEqual(storageContract.runtimeBytecode)
     })
 
@@ -336,6 +338,30 @@ describe('eth', () => {
 
     it('transaction should be instance of TransactionReceipt', () => {
       return transactionReceipt.should.be.instanceof(TransactionReceipt)
+    })
+
+  })
+
+  describe('compileSolidity', () => {
+
+    let solidityOutput
+
+    it('should compile storageContract', () => {
+      return solquester.eth.compileSolidity(storageContract.sol).then((_solidityOutput) => {
+        solidityOutput = _solidityOutput
+      }).should.be.fulfilled
+    })
+
+    it('solidityOutput should be instanceof SolidityOutput', () => {
+      solidityOutput.should.be.instanceof(SolidityOutput)
+    })
+
+    it('code should be correct', () => {
+      solidityOutput.code.should.amorphEqual(storageContract.bytecode)
+    })
+
+    it('abi should be correct', () => {
+      solidityOutput.info.abiDefinition.should.deep.equal(storageContract.abi)
     })
 
   })
