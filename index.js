@@ -1,35 +1,22 @@
 const Q = require('q')
-const Amorph = require('../modules/Amorph')
 const _ = require('lodash')
-const Protocol = require('./Protocol')
-const BlockFlag = require('./BlockFlag')
 const requireDirectory = require('require-directory')
-
-function Batch() {
-  this.execution = Q.defer()
-  this.args = []
-  this.interfaces = []
-  this.executions = []
-  this.blockFlags = []
-}
 
 function Solquester(provider, defaults) {
   const solquester = this
   this.provider = provider
-  this.batch = new Batch()
+  this.batch = new Solquester.Batch()
   this.batches = []
   this.defaults = defaults || {}
   this.pollQueue = []
   this.poll(1000)
-  this.web3 = new Protocol(this, requireDirectory(module, './interfaces/web3'))
-  this.net = new Protocol(this, requireDirectory(module, './interfaces/net'))
-  this.eth = new Protocol(this, requireDirectory(module, './interfaces/eth'))
-  this.miner = new Protocol(this, requireDirectory(module, './interfaces/miner'))
+  this.web3 = new Solquester.Protocol(this, Solquester.interfaces.web3)
+  this.net = new Solquester.Protocol(this, Solquester.interfaces.net)
+  this.eth = new Solquester.Protocol(this, Solquester.interfaces.eth)
+  this.miner = new Solquester.Protocol(this, Solquester.interfaces.miner)
 }
 
-Solquester.Batch = Batch
-Solquester.TransactionReceipt = require('./TransactionReceipt')
-
+_.merge(Solquester, requireDirectory(module, './lib'))
 
 Solquester.prototype.add = function add(options) {
   return this[options.protocol][options.name].apply(this, options.args)
@@ -70,23 +57,14 @@ const execute = _.debounce((solquester) => {
 
   const batch = solquester.batch
 
-  solquester.batch = new Batch
+  solquester.batch = new Solquester.Batch
   solquester.batches.push(batch)
 
   const payloads = batch.interfaces.map((interface, index) => {
 
     const args = batch.args[index]
     const params = interface.inputter ?
-      interface.inputter.apply(solquester, args).map((param) => {
-        if (param instanceof BlockFlag) {
-          if (solquester.batch.blockFlags[index]) {
-            return solquester.batch.blockFlags[index].toParam()
-          } else {
-            return param.toParam()
-          }
-        }
-        return param
-      })
+      interface.inputter.apply(solquester, args)
       : args
 
     return {

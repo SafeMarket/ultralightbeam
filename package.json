@@ -26,7 +26,7 @@
     "solc": "^0.4.4"
   },
   "dependencies": {
-    "amorph": "^0.1.0",
+    "amorph": "^0.1.1",
     "amorph-base58": "0.0.1",
     "amorph-bignumber": "0.0.1",
     "amorph-buffer": "0.0.1",

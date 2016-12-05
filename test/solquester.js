@@ -1,9 +1,9 @@
 const _ = require('lodash')
 const Solbuilder = require('../lib/Solbuilder')
-const Amorph = require('../modules/Amorph')
+const Amorph = require('../lib/Amorph')
 const chai = require('../modules/chai')
 const TransactionReceipt = require('../lib/TransactionReceipt')
-const Solquester = require('../lib/Solquester')
+const Solquester = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
 

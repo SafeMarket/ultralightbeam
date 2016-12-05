@@ -3,7 +3,7 @@ const fs = require('fs')
 const solc = require('solc')
 const _ = require('lodash')
 const chai = require('chai')
-const Amorph = require('../modules/Amorph')
+const Amorph = require('../lib/Amorph')
 
 const contracts = {}
 

@@ -1,4 +1,4 @@
-const Amorph = require('./Amorph')
+const Amorph = require('../lib/Amorph')
 const util = require('ethereumjs-util')
 const crypto = require('crypto')
 

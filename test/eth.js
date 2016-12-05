@@ -1,4 +1,4 @@
-const Amorph = require('../modules/Amorph')
+const Amorph = require('../lib/Amorph')
 const Q = require('q')
 const solquester = require('./solquester')
 const storageContract = require('./storageContract')

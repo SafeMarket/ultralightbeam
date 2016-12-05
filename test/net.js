@@ -1,5 +1,5 @@
 const solquester = require('./solquester')
-const Amorph = require('../modules/Amorph')
+const Amorph = require('../lib/Amorph')
 
 describe('net', () => {
 

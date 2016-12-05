@@ -1,7 +1,7 @@
 const solquester = require('./solquester')
 const Solbuilder = require('../lib/Solbuilder')
 const solc = require('solc')
-const Amorph = require('../modules/Amorph')
+const Amorph = require('../lib/Amorph')
 
 const storageContract = {
   sol: `pragma solidity ^0.4.4;
