@@ -7,6 +7,8 @@ const Solquester = require('../lib/Solquester')
 const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
 
+require('./interfaces')
+
 const solquester = new Solquester(TestRPC.provider({
   blocktime: 3,
   accounts: personas.map((persona) => {
