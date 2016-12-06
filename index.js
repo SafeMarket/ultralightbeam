@@ -2,27 +2,27 @@ const Q = require('q')
 const _ = require('lodash')
 const bulk = require('bulk-require')
 
-function Solquester(provider, defaults) {
+function Ultralightbeam(provider, defaults) {
   const solquester = this
   this.provider = provider
-  this.batch = new Solquester.Batch()
+  this.batch = new Ultralightbeam.Batch()
   this.batches = []
   this.defaults = defaults || {}
   this.pollQueue = []
   this.poll(1000)
-  this.web3 = new Solquester.Protocol(this, Solquester.interfaces.web3)
-  this.net = new Solquester.Protocol(this, Solquester.interfaces.net)
-  this.eth = new Solquester.Protocol(this, Solquester.interfaces.eth)
-  this.miner = new Solquester.Protocol(this, Solquester.interfaces.miner)
+  this.web3 = new Ultralightbeam.Protocol(this, Ultralightbeam.interfaces.web3)
+  this.net = new Ultralightbeam.Protocol(this, Ultralightbeam.interfaces.net)
+  this.eth = new Ultralightbeam.Protocol(this, Ultralightbeam.interfaces.eth)
+  this.miner = new Ultralightbeam.Protocol(this, Ultralightbeam.interfaces.miner)
 }
 
-_.merge(Solquester, bulk(__dirname+'/lib', '**/*.js'))
+_.merge(Ultralightbeam, bulk(__dirname+'/lib', '**/*.js'))
 
-Solquester.prototype.add = function add(options) {
+Ultralightbeam.prototype.add = function add(options) {
   return this[options.protocol][options.name].apply(this, options.args)
 }
 
-Solquester.prototype.poll = function(wait) {
+Ultralightbeam.prototype.poll = function(wait) {
 
   if (this.pollInterval !== undefined) {
     clearInterval(this.pollInterval)
@@ -37,7 +37,7 @@ Solquester.prototype.poll = function(wait) {
 
 }
 
-Solquester.prototype.pollForTransactionReceipt = function (transactionHash) {
+Ultralightbeam.prototype.pollForTransactionReceipt = function (transactionHash) {
   const deferred = Q.defer()
   this.pollQueue.push(() => {
     this.eth.getTransactionReceipt(transactionHash).then((transactionReceipt) => {
@@ -57,7 +57,7 @@ const execute = _.debounce((solquester) => {
 
   const batch = solquester.batch
 
-  solquester.batch = new Solquester.Batch
+  solquester.batch = new Ultralightbeam.Batch
   solquester.batches.push(batch)
 
   const payloads = batch.interfaces.map((interface, index) => {
@@ -109,8 +109,8 @@ const execute = _.debounce((solquester) => {
   })
 }, 100)
 
-Solquester.prototype.execute = function () {
+Ultralightbeam.prototype.execute = function () {
   execute(this)
 }
 
-module.exports = Solquester
+module.exports = Ultralightbeam
