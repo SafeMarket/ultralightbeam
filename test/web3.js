@@ -1,4 +1,4 @@
-const solquester = require('./solquester')
+const ultralightbeam = require('./ultralightbeam')
 const Amorph = require('../lib/Amorph')
 
 describe('web3', () => {
@@ -8,7 +8,7 @@ describe('web3', () => {
     let clientVersion
 
     it('should be fulfilled', () => {
-      return solquester.web3.getClientVersion().then((_clientVersion) => {
+      return ultralightbeam.web3.getClientVersion().then((_clientVersion) => {
         clientVersion = _clientVersion
       }).should.be.fulfilled
     })
@@ -29,7 +29,7 @@ describe('web3', () => {
 
     it('should return ciphertext', () => {
       const plaintext = new Amorph('0x68656c6c6f20776f726c64', 'hex.prefixed')
-      return solquester.web3.getSha3(plaintext).then((_ciphertext) => {
+      return ultralightbeam.web3.getSha3(plaintext).then((_ciphertext) => {
         ciphertext = _ciphertext
       }).should.be.fulfilled
     })

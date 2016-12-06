@@ -3,13 +3,13 @@ const Solbuilder = require('../lib/Solbuilder')
 const Amorph = require('../lib/Amorph')
 const chai = require('../modules/chai')
 const TransactionReceipt = require('../lib/TransactionReceipt')
-const Solquester = require('../')
+const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
 
 require('./interfaces')
 
-const solquester = new Solquester(TestRPC.provider({
+const ultralightbeam = new Ultralightbeam(TestRPC.provider({
   blocktime: 3,
   accounts: personas.map((persona) => {
     return {
@@ -18,16 +18,16 @@ const solquester = new Solquester(TestRPC.provider({
     }
   })
 }))
-solquester.defaults.gas = new Amorph(3000000, 'number')
-solquester.defaults.gasPrice = new Amorph(20000000000, 'number')
+ultralightbeam.defaults.gas = new Amorph(3000000, 'number')
+ultralightbeam.defaults.gasPrice = new Amorph(20000000000, 'number')
 
-describe('solquester', () => {
+describe('ultralightbeam', () => {
 
-  it('should set solquester.defaults.from', () => {
-    return solquester
+  it('should set ultralightbeam.defaults.from', () => {
+    return ultralightbeam
       .eth.getAccounts()
       .then((_accounts) => {
-        solquester.defaults.from = _accounts[0]
+        ultralightbeam.defaults.from = _accounts[0]
       })
       .should.be.fulfilled
   })
@@ -47,7 +47,7 @@ describe('solquester', () => {
 
 
 //   it('should deploy', () => {
-//     return solquester
+//     return ultralightbeam
 //       .add(simpleBuilder.deploy([]))
 //       .withHandler((_transactionHash) => {
 //         transactionHash = _transactionHash
@@ -60,7 +60,7 @@ describe('solquester', () => {
 //   })
 
 //   it('getTransactionReceipt should be null', () => {
-//     return solquester.eth.getTransactionReceipt(transactionHash).promise.should.eventually.equal(null)
+//     return ultralightbeam.eth.getTransactionReceipt(transactionHash).promise.should.eventually.equal(null)
 //   })
 
 //   it('should wait a second', (done) => {
@@ -68,7 +68,7 @@ describe('solquester', () => {
 //   })
 
 //   it('getTransactionReceipt should be instanceof TransactionReceipt', () => {
-//     return solquester.eth.getTransactionReceipt(transactionHash).withHandler((_transactionReciept) => {
+//     return ultralightbeam.eth.getTransactionReceipt(transactionHash).withHandler((_transactionReciept) => {
 //       transactionReceipt = _transactionReciept
 //       address = transactionReceipt.contractAddress
 //     }).promise.should.eventually.be.instanceof(TransactionReceipt)
@@ -79,23 +79,23 @@ describe('solquester', () => {
 //   })
 
 //   it('getCode should deep equal runtimeBytecode', () => {
-//     return solquester
+//     return ultralightbeam
 //       .eth.getCode(address)
 //       .promise.should.eventually.amorphTo('hex').equal(contracts.Simple.runtimeBytecode.to('hex'))
 //   })
 
 //   it('var1 should be equal to 1', () => {
-//     return solquester
+//     return ultralightbeam
 //       .add(simpleBuilder.get(address, 'var1()'))
 //       .promise.should.eventually.amorphTo('number').equal(1)
 //   })
 
 //   it('var2 should be equal to 2', () => {
-//     return solquester
+//     return ultralightbeam
 //       .add(simpleBuilder.get(address, 'var2()'))
 //       .promise.should.eventually.amorphTo('number').equal(2)
 //   })
 
 // })
 
-module.exports = solquester
+module.exports = ultralightbeam

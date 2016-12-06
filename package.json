@@ -1,5 +1,5 @@
 {
-  "name": "solquester",
+  "name": "ultralightbeam",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/SafeMarket/solquester.git"
+    "url": "git+ssh://git@github.com/SafeMarket/ultralightbeam.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SafeMarket/solquester/issues"
+    "url": "https://github.com/SafeMarket/ultralightbeam/issues"
   },
-  "homepage": "https://github.com/SafeMarket/solquester#readme",
+  "homepage": "https://github.com/SafeMarket/ultralightbeam#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",

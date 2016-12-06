@@ -1,4 +1,4 @@
-const solquester = require('./solquester')
+const ultralightbeam = require('./ultralightbeam')
 const Solbuilder = require('../lib/Solbuilder')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
@@ -25,10 +25,10 @@ storageContract.solbuilder = new Solbuilder(storageContract.abi, storageContract
 
 describe('storageContract', () => {
   it('should deploy', () => {
-    return solquester
+    return ultralightbeam
       .add(storageContract.solbuilder.deploy())
       .then((transactionHash) => {
-        return solquester
+        return ultralightbeam
           .pollForTransactionReceipt(transactionHash)
           .then((transactionReceipt) => {
             storageContract.address = transactionReceipt.contractAddress
