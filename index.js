@@ -1,6 +1,6 @@
 const Q = require('q')
 const _ = require('lodash')
-const requireDirectory = require('require-directory')
+const bulk = require('bulk-require')
 
 function Solquester(provider, defaults) {
   const solquester = this
@@ -16,7 +16,7 @@ function Solquester(provider, defaults) {
   this.miner = new Solquester.Protocol(this, Solquester.interfaces.miner)
 }
 
-_.merge(Solquester, requireDirectory(module, './lib'))
+_.merge(Solquester, bulk(__dirname+'/lib', '**/*.js'))
 
 Solquester.prototype.add = function add(options) {
   return this[options.protocol][options.name].apply(this, options.args)
