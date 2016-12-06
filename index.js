@@ -3,7 +3,7 @@ const _ = require('lodash')
 const bulk = require('bulk-require')
 
 function Ultralightbeam(provider, defaults) {
-  const solquester = this
+  const ultralightbeam = this
   this.provider = provider
   this.batch = new Ultralightbeam.Batch()
   this.batches = []
@@ -53,18 +53,18 @@ Ultralightbeam.prototype.pollForTransactionReceipt = function (transactionHash) 
   return deferred.promise
 }
 
-const execute = _.debounce((solquester) => {
+const execute = _.debounce((ultralightbeam) => {
 
-  const batch = solquester.batch
+  const batch = ultralightbeam.batch
 
-  solquester.batch = new Ultralightbeam.Batch
-  solquester.batches.push(batch)
+  ultralightbeam.batch = new Ultralightbeam.Batch
+  ultralightbeam.batches.push(batch)
 
   const payloads = batch.interfaces.map((interface, index) => {
 
     const args = batch.args[index]
     const params = interface.inputter ?
-      interface.inputter.apply(solquester, args)
+      interface.inputter.apply(ultralightbeam, args)
       : args
 
     return {
@@ -74,7 +74,7 @@ const execute = _.debounce((solquester) => {
 
   })
 
-  solquester.provider.sendAsync(payloads, (err, results) => {
+  ultralightbeam.provider.sendAsync(payloads, (err, results) => {
 
     if (err && !results) {
       batch.executions.forEach((execution) => { execution.reject(err) })
