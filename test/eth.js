@@ -159,7 +159,7 @@ describe('eth', () => {
 
   describe('getCompilers', () => {
     it('should deep equal ["solidity"]', () => {
-      return ultralightbeam.eth.getCompilers(accounts[0]).should.eventually.deep.equal(['solidity'])
+      return ultralightbeam.eth.getCompilers().should.eventually.deep.equal(['solidity'])
     })
   })
 
@@ -278,7 +278,7 @@ describe('eth', () => {
   describe('getBlockByNumber', () => {
 
     it('should be fulfilled', () => {
-      return ultralightbeam.eth.getBlockByNumber(new Amorph(1, 'number')).then((block1) => {
+      return ultralightbeam.eth.getBlockByNumber(new Amorph(1, 'number'), true).then((block1) => {
         block1ByNumber = block1
       })
     })
@@ -292,7 +292,7 @@ describe('eth', () => {
   describe('getBlockByHash', () => {
 
     it('should be fulfilled', () => {
-      return ultralightbeam.eth.getBlockByHash(block1ByNumber.hash).then((block1) => {
+      return ultralightbeam.eth.getBlockByHash(block1ByNumber.hash, true).then((block1) => {
         block1ByHash = block1
       })
     })
@@ -312,7 +312,7 @@ describe('eth', () => {
     let transaction
 
     it('should be fulfilled', () => {
-      return ultralightbeam.eth.getTransactionByHash(block1ByNumber.transactionHashes[0], blockFlags.latest).then((_transaction) => {
+      return ultralightbeam.eth.getTransactionByHash(block1ByNumber.transactions[0].hash).then((_transaction) => {
         transaction = _transaction
       })
     })
@@ -322,7 +322,7 @@ describe('eth', () => {
     })
 
     it('transaction hash should be correct', () => {
-      return transaction.hash.should.amorphEqual(block1ByNumber.transactionHashes[0])
+      return transaction.hash.should.amorphEqual(block1ByNumber.transactions[0].hash)
     })
 
   })
@@ -332,7 +332,7 @@ describe('eth', () => {
     let transactionReceipt
 
     it('should be fulfilled', () => {
-      return ultralightbeam.eth.getTransactionReceipt(block1ByNumber.transactionHashes[0]).then((_transactionReceipt) => {
+      return ultralightbeam.eth.getTransactionReceipt(block1ByNumber.transactions[0].hash).then((_transactionReceipt) => {
         transactionReceipt = _transactionReceipt
       })
     })

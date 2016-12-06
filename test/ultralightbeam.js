@@ -34,6 +34,11 @@ describe('ultralightbeam', () => {
 
 })
 
+module.exports = ultralightbeam
+
+require('./validation')
+require('./rejection')
+
 // describe('Simple', () => {
 
 //   let transactionHash
@@ -97,5 +102,3 @@ describe('ultralightbeam', () => {
 //   })
 
 // })
-
-module.exports = ultralightbeam
