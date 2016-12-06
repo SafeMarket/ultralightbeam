@@ -31,10 +31,10 @@
     "amorph-bignumber": "0.0.1",
     "amorph-buffer": "0.0.1",
     "amorph-hex": "0.0.2",
+    "bulk-require": "^1.0.0",
     "ethereumjs-tx": "^1.1.4",
     "lodash": "^4.17.2",
     "q": "^1.4.1",
-    "require-directory": "^2.1.1",
     "web3": "^0.17.0-beta"
   }
 }
