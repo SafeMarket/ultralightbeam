@@ -77,7 +77,7 @@ const execute = _.debounce((solquester) => {
   solquester.provider.sendAsync(payloads, (err, results) => {
 
     if (err && !results) {
-      batch.executions.forEach((execution) => { deferred.reject(err) })
+      batch.executions.forEach((execution) => { execution.reject(err) })
       batch.execution.reject(err)
       return
     }
