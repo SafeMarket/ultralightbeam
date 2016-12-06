@@ -36,6 +36,7 @@ describe('ultralightbeam', () => {
 
 module.exports = ultralightbeam
 
+require('./locked-account')
 require('./validation')
 require('./rejection')
 
