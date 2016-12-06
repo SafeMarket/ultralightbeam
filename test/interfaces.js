@@ -1,5 +1,5 @@
-const requireDirectory = require('require-directory')
-const interfacesByProtocol = requireDirectory(module, '../lib/interfaces')
+const bulk = require('bulk-require')
+const interfacesByProtocol = bulk(__dirname+'/../lib/interfaces/', [ '**/*.js' ])
 const Interface = require('../lib/Interface')
 const _ = require('lodash')
 const Validator = require('../lib/Validator')
