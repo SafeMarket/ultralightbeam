@@ -1,25 +1,27 @@
 const Ultralightbeam = require('../')
 const ultralightbeam = require('./ultralightbeam')
 const personas = require('../modules/personas')
+const errors = require('../lib/errors')
+const blockFlagValidator = require('../lib/validators/blockFlag')
 
 describe('validation', () => {
 
   it('should throw ArgumentsLengthError', () => {
-    (function(){
+    (() => {
       ultralightbeam.eth.getBalance()
-    }).should.throw(Ultralightbeam.errors.ArgumentsLengthError)
+    }).should.throw(errors.ArgumentsLengthError)
   })
 
   it('should throw ArgumentsLengthError', () => {
-    (function(){
+    (() => {
       ultralightbeam.eth.getBalance(personas[0].address)
-    }).should.throw(Ultralightbeam.errors.ArgumentsLengthError)
+    }).should.throw(errors.ArgumentsLengthError)
   })
 
-  it('should throw validators.BlockFlag.Error', () => {
-    (function(){
+  it('should throw validators.blockFlag.Error', () => {
+    (() => {
       ultralightbeam.eth.getBalance(personas[0].address, {})
-    }).should.throw(Ultralightbeam.validators.BlockFlag.Error)
+    }).should.throw(blockFlagValidator.Error)
   })
 
 })

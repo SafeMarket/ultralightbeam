@@ -3,12 +3,11 @@ const ultralightbeam = require('./ultralightbeam')
 const TransactionRequest = require('../lib/TransactionRequest')
 const Amorph = require('../lib/Amorph')
 
-describe('contracts', () => {
+describe('locked account', () => {
 
-  const sources = {}
   const persona = new Persona()
 
-  it('sendtransaction should be rejected', () => {
+  it('sendTransaction should be rejected', () => {
     return ultralightbeam.eth.sendTransaction(new TransactionRequest({
       from: persona.address,
       to: persona.address,

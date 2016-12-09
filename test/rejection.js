@@ -7,7 +7,7 @@ describe('rejection', () => {
 
   let batch
 
-  it ('should make 3 exeuctions', () => {
+  it('should make 3 exeuctions', () => {
 
     ultralightbeam.eth.sendTransaction(new TransactionRequest({
       from: personas[0].address,
@@ -17,7 +17,7 @@ describe('rejection', () => {
     ultralightbeam.eth.sendTransaction(new TransactionRequest({
       from: personas[0].address,
       to: personas[1].address,
-      gas: new Amorph(999999999999999, 'number')
+      gas: new Amorph(9999999999999999, 'number')
     }))
 
     ultralightbeam.eth.sendTransaction(new TransactionRequest({
@@ -28,20 +28,20 @@ describe('rejection', () => {
     batch = ultralightbeam.batch
   })
 
-  it ('batch.execution should be rejected', () => {
-    return batch.execution.promise.should.be.rejected
+  it('batch should be rejected', () => {
+    return batch.deferred.promise.should.be.rejected
   })
 
-  it ('batch.executions[0] should be fulfilled', () => {
-    return batch.executions[0].promise.should.be.fulfilled
+  it('batch.parts[0] should be fulfilled', () => {
+    return batch.parts[0].deferred.promise.should.be.fulfilled
   })
 
-  it ('batch.executions[1] should be rejected', () => {
-    return batch.executions[1].promise.should.be.rejected
+  it('batch.parts[1] should be rejected', () => {
+    return batch.parts[1].deferred.promise.should.be.rejected
   })
 
-  it ('batch.executions[2] should be fulfilled', () => {
-    return batch.executions[2].promise.should.be.fulfilled
+  it('batch.parts[2] should be fulfilled', () => {
+    return batch.parts[2].deferred.promise.should.be.fulfilled
   })
 
 })
