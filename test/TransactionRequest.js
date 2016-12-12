@@ -70,11 +70,12 @@ describe('TransactionRequest', () => {
     const promise = ultralightbeam
       .eth.sendTransaction(new TransactionRequest)
       .from(personas[0].address)
+      .to(personas[5].address)
       .gas(new Amorph(21000, 'number'))
 
     const transactionRequest = _.last(ultralightbeam.batch.parts).inputs[0]
     transactionRequest.should.be.instanceOf(TransactionRequest)
-    transactionRequest.toParam().should.have.all.keys('gas', 'from')
+    transactionRequest.toParam().should.have.all.keys('gas', 'to', 'from')
 
     promise.then.should.be.instanceOf(Function)
     return promise

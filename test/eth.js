@@ -199,10 +199,6 @@ describe('eth', () => {
       })).should.be.fulfilled
     })
 
-    it('should wait for blockPoller', () => {
-      return ultralightbeam.blockPoller.promise
-    })
-
     it('account1 balance should have increased by 1', () => {
       return ultralightbeam.eth.getBalance(
         accounts[1],
@@ -222,17 +218,10 @@ describe('eth', () => {
       })
 
       return ultralightbeam.eth.sendTransaction(transactionRequest).then((
-        transactionHash
+        transactionReceipt
       ) => {
-        return ultralightbeam.blockPoller.promise.then(() => {
-          // eslint-disable-next-line max-len
-          return ultralightbeam.eth.getTransactionReceipt(transactionHash).then((
-            transactionReceipt
-          ) => {
-            contractAddress1 = transactionReceipt.contractAddress
-            return transactionReceipt
-          })
-        })
+        transactionReceipt
+        contractAddress1 = transactionReceipt.contractAddress
       }).should.be.fulfilled
 
     })
@@ -258,16 +247,10 @@ describe('eth', () => {
       )
 
       return ultralightbeam.eth.sendRawTransaction(signedRawTransaction).then((
-        transactionHash
+        transactionReceipt
       ) => {
-        return ultralightbeam.blockPoller.promise.then(() => {
-          return ultralightbeam.eth.getTransactionReceipt(
-            transactionHash
-          ).then((transactionReceipt) => {
-            contractAddress1 = transactionReceipt.contractAddress
-            return transactionReceipt
-          })
-        })
+        contractAddress1 = transactionReceipt.contractAddress
+        return transactionReceipt
       }).should.be.fulfilled
     })
 
