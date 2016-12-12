@@ -29,7 +29,13 @@ function Ultralightbeam(provider, defaults) {
 }
 
 Ultralightbeam.prototype.add = function add(manifest) {
-  return this[manifest.protocol][manifest.name](...manifest.inputs)
+  // eslint-disable-next-line max-len
+  return this[manifest.protocol][manifest.name](...manifest.inputs).then((output) => {
+    if (manifest.formatter) {
+      return manifest.formatter(output)
+    }
+    return output
+  })
 }
 
 Ultralightbeam.prototype.execute = function execute() {
