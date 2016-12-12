@@ -27,9 +27,9 @@ storageContract.solbuilder = new Solbuilder(
 
 describe('storageContract', () => {
   it('should deploy', () => {
-    return ultralightbeam.eth.sendTransaction(
-      storageContract.solbuilder.deploy()
-    ).then((transactionReceipt) => {
+    return ultralightbeam.add(storageContract.solbuilder.deploy()).then((
+      transactionReceipt
+    ) => {
       storageContract.address = transactionReceipt.contractAddress
     }).should.be.fulfilled
   })
