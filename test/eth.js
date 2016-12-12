@@ -21,6 +21,7 @@ describe('eth', () => {
   let contractAddress2
   let block1ByNumber
   let block1ByHash
+  let block1ByFlag
 
   describe('getAccounts', () => {
 
@@ -49,27 +50,6 @@ describe('eth', () => {
 
   })
 
-  describe('getBlockNumber', () => {
-
-    it('should be fulfilled', () => {
-
-      return ultralightbeam
-        .eth.getBlockNumber()
-        .then((_blockNumber) => {
-          blockNumber = _blockNumber
-        })
-        .should.be.fulfilled
-
-    })
-
-    it('should be an integer', () => {
-      blockNumber.should.be.instanceof(Amorph)
-      const remainder = blockNumber.to('number') % 1
-      remainder.should.equal(0)
-    })
-
-  })
-
   describe('getBalance', () => {
 
     it('should be fulfilled', () => {
@@ -84,8 +64,6 @@ describe('eth', () => {
           })
         promises.push(promise)
       })
-
-      promises.push(ultralightbeam.batch.deferred.promise)
 
       return Q.all(promises)
 
@@ -214,17 +192,15 @@ describe('eth', () => {
   describe('sendTransaction', () => {
 
     it('should send 1 wei from account0 to account1', () => {
-      const transactionRequest = new TransactionRequest({
+      return ultralightbeam.eth.sendTransaction(new TransactionRequest({
         from: accounts[0],
         to: accounts[1],
         value: new Amorph(1, 'number')
-      })
-      return ultralightbeam.eth.sendTransaction(transactionRequest)
-        .should.eventually.be.fulfilled
+      })).should.be.fulfilled
     })
 
-    it('should wait 3  seconds', (done) => {
-      setTimeout(done, 3000)
+    it('should wait for blockPoller', () => {
+      return ultralightbeam.blockPoller.promise
     })
 
     it('account1 balance should have increased by 1', () => {
@@ -245,14 +221,18 @@ describe('eth', () => {
         gas: new Amorph(3141592, 'number')
       })
 
-      return ultralightbeam.eth.sendTransaction(
-        transactionRequest
-      ).then((transactionHash) => {
-        return ultralightbeam
-          .pollForTransactionReceipt(transactionHash)
-          .then((transactionReceipt) => {
+      return ultralightbeam.eth.sendTransaction(transactionRequest).then((
+        transactionHash
+      ) => {
+        return ultralightbeam.blockPoller.promise.then(() => {
+          // eslint-disable-next-line max-len
+          return ultralightbeam.eth.getTransactionReceipt(transactionHash).then((
+            transactionReceipt
+          ) => {
             contractAddress1 = transactionReceipt.contractAddress
+            return transactionReceipt
           })
+        })
       }).should.be.fulfilled
 
     })
@@ -276,15 +256,18 @@ describe('eth', () => {
       const signedRawTransaction = transactionRequest.sign(
         personas[0].privateKey
       )
-      return ultralightbeam.eth.sendRawTransaction(
-        signedRawTransaction
-      )
-      .then((transactionHash) => {
-        return ultralightbeam
-          .pollForTransactionReceipt(transactionHash)
-          .then((transactionReceipt) => {
-            contractAddress2 = transactionReceipt.contractAddress
+
+      return ultralightbeam.eth.sendRawTransaction(signedRawTransaction).then((
+        transactionHash
+      ) => {
+        return ultralightbeam.blockPoller.promise.then(() => {
+          return ultralightbeam.eth.getTransactionReceipt(
+            transactionHash
+          ).then((transactionReceipt) => {
+            contractAddress1 = transactionReceipt.contractAddress
+            return transactionReceipt
           })
+        })
       }).should.be.fulfilled
     })
 
@@ -326,11 +309,32 @@ describe('eth', () => {
 
   })
 
+  describe('getBlockNumber', () => {
+
+    it('should be fulfilled', () => {
+
+      return ultralightbeam
+        .eth.getBlockNumber()
+        .then((_blockNumber) => {
+          blockNumber = _blockNumber
+        })
+        .should.be.fulfilled
+
+    })
+
+    it('should be an integer', () => {
+      blockNumber.should.be.instanceof(Amorph)
+      const remainder = blockNumber.to('number') % 1
+      remainder.should.equal(0)
+    })
+
+  })
+
   describe('getBlockByNumber', () => {
 
     it('should be fulfilled', () => {
       return ultralightbeam.eth.getBlockByNumber(
-        new Amorph(1, 'number'),
+        blockNumber,
         true
       ).then((block1) => {
         block1ByNumber = block1
@@ -359,6 +363,26 @@ describe('eth', () => {
 
     it('block1ByNumber should deep equal block1ByHash', () => {
       return block1ByNumber.should.deep.equal(block1ByHash)
+    })
+
+  })
+
+  describe('getBlockByFlag', () => {
+
+    it('should be fulfilled', () => {
+      return ultralightbeam.eth.getBlockByFlag(
+        blockFlags.latest, true
+      ).then((block1) => {
+        block1ByFlag = block1
+      })
+    })
+
+    it('block1ByFlag should be instance of Block', () => {
+      return block1ByFlag.should.be.instanceof(Block)
+    })
+
+    it('block1ByFlag should deep equal block1ByHash', () => {
+      return block1ByFlag.should.deep.equal(block1ByHash)
     })
 
   })

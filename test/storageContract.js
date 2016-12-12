@@ -27,15 +27,11 @@ storageContract.solbuilder = new Solbuilder(
 
 describe('storageContract', () => {
   it('should deploy', () => {
-    return ultralightbeam
-      .add(storageContract.solbuilder.deploy())
-      .then((transactionHash) => {
-        return ultralightbeam
-          .pollForTransactionReceipt(transactionHash)
-          .then((transactionReceipt) => {
-            storageContract.address = transactionReceipt.contractAddress
-          })
-      }).should.be.fulfilled
+    return ultralightbeam.deploy(storageContract.solbuilder.deploy()).then((
+      transactionReceipt
+    ) => {
+      storageContract.address = transactionReceipt.contractAddress
+    }).should.be.fulfilled
   })
 })
 
