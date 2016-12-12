@@ -196,7 +196,7 @@ describe('eth', () => {
         from: accounts[0],
         to: accounts[1],
         value: new Amorph(1, 'number')
-      })).should.be.fulfilled
+      })).should.eventually.be.instanceOf(TransactionReceipt)
     })
 
     it('account1 balance should have increased by 1', () => {
@@ -220,9 +220,9 @@ describe('eth', () => {
       return ultralightbeam.eth.sendTransaction(transactionRequest).then((
         transactionReceipt
       ) => {
-        transactionReceipt
         contractAddress1 = transactionReceipt.contractAddress
-      }).should.be.fulfilled
+        return transactionReceipt
+      }).should.eventually.be.instanceof(TransactionReceipt)
 
     })
 
@@ -251,7 +251,7 @@ describe('eth', () => {
       ) => {
         contractAddress1 = transactionReceipt.contractAddress
         return transactionReceipt
-      }).should.be.fulfilled
+      }).should.eventually.be.instanceof(TransactionReceipt)
     })
 
     it('contract address code should be correct', () => {
@@ -396,18 +396,10 @@ describe('eth', () => {
 
   describe('getTransactionReceipt', () => {
 
-    let transactionReceipt
-
     it('should be fulfilled', () => {
       return ultralightbeam.eth.getTransactionReceipt(
         block1ByNumber.transactions[0].hash
-      ).then((_transactionReceipt) => {
-        transactionReceipt = _transactionReceipt
-      })
-    })
-
-    it('transaction should be instance of TransactionReceipt', () => {
-      return transactionReceipt.should.be.instanceof(TransactionReceipt)
+      ).should.eventually.be.instanceOf(TransactionReceipt)
     })
 
   })
