@@ -51,6 +51,9 @@ describe('AliasReg', () => {
       transactionReceipt
     ) => {
       AliasReg.address = transactionReceipt.contractAddress
+    }, (err) => {
+      console.log(err)
+      return err
     }).should.be.fulfilled
   })
 
@@ -98,8 +101,7 @@ describe('AliasReg', () => {
         AliasReg.address,
         'getAddr(bytes32)',
         [myAlias]
-      ))
-      .should.eventually.amorphEqual(ultralightbeam.defaults.from)
+      )).should.eventually.amorphEqual(ultralightbeam.defaults.from.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
@@ -107,7 +109,7 @@ describe('AliasReg', () => {
       .add(AliasReg.solbuilder.get(
         AliasReg.address,
         'getAlias(address)',
-        [ultralightbeam.defaults.from]
+        [ultralightbeam.defaults.from.address]
       ))
       .should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))
   })

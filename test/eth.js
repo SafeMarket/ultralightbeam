@@ -101,7 +101,7 @@ describe('eth', () => {
     it('should get pos1[msg.sender] ', () => {
       const keyArray = []
         .concat(new Array(12).fill(0))
-        .concat(ultralightbeam.defaults.from.to('array'))
+        .concat(ultralightbeam.defaults.from.address.to('array'))
         .concat(new Array(31).fill(0))
         .concat([1])
       const key = new Amorph(keyArray, 'array')
@@ -193,15 +193,15 @@ describe('eth', () => {
 
     it('should send 1 wei from account0 to account1', () => {
       return ultralightbeam.eth.sendTransaction(new TransactionRequest({
-        from: accounts[0],
-        to: accounts[1],
+        from: personas[0],
+        to: personas[1].address,
         value: new Amorph(1, 'number')
       })).should.eventually.be.instanceOf(TransactionReceipt)
     })
 
     it('account1 balance should have increased by 1', () => {
       return ultralightbeam.eth.getBalance(
-        accounts[1],
+        personas[1].address,
         blockFlags.latest
       )
       .should.eventually.amorphTo('number').equal(
@@ -235,33 +235,6 @@ describe('eth', () => {
 
   })
 
-  describe('sendRawTransaction', () => {
-
-    it('should deploy contract', () => {
-      const transactionRequest = new TransactionRequest({
-        data: storageContract.bytecode,
-        gas: new Amorph(3141592, 'number')
-      })
-      const signedRawTransaction = transactionRequest.sign(
-        personas[0].privateKey
-      )
-
-      return ultralightbeam.eth.sendRawTransaction(signedRawTransaction).then((
-        transactionReceipt
-      ) => {
-        contractAddress1 = transactionReceipt.contractAddress
-        return transactionReceipt
-      }).should.eventually.be.instanceof(TransactionReceipt)
-    })
-
-    it('contract address code should be correct', () => {
-      if (!contractAddress2) return
-      return ultralightbeam.eth.getCode(contractAddress2, blockFlags.latest)
-        .should.eventually.amorphEqual(storageContract.runtimeBytecode)
-    })
-
-  })
-
   describe('call', () => {
 
     it('should get correct result', () => {
@@ -280,7 +253,7 @@ describe('eth', () => {
 
     it('should return 21000 for a simple transfer', () => {
       const transactionRequest = new TransactionRequest({
-        from: accounts[0],
+        from: personas[0],
         to: accounts[1],
         value: new Amorph(1, 'number')
       })

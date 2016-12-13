@@ -20,7 +20,7 @@ describe('ultralightbeam', () => {
     return ultralightbeam
       .eth.getAccounts()
       .then((_accounts) => {
-        ultralightbeam.defaults.from = _accounts[0]
+        ultralightbeam.defaults.from = personas[0]
       }).should.be.fulfilled
   })
 
