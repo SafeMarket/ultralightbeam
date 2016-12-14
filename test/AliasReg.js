@@ -52,7 +52,6 @@ describe('AliasReg', () => {
     ) => {
       AliasReg.address = transactionReceipt.contractAddress
     }, (err) => {
-      console.log(err)
       return err
     }).should.be.fulfilled
   })

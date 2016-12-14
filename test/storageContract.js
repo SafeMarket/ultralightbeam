@@ -2,6 +2,7 @@ const ultralightbeam = require('./ultralightbeam')
 const Solbuilder = require('../lib/Solbuilder')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
+const blockFlags = require('../lib/blockFlags')
 
 const storageContract = {
   sol: `pragma solidity ^0.4.4;
@@ -9,7 +10,7 @@ const storageContract = {
           uint public pos0;
           mapping(address => uint) pos1;
 
-          function Storage() {
+          function Storage() payable {
               pos0 = 1234;
               pos1[msg.sender] = 5678;
           }
@@ -27,11 +28,27 @@ storageContract.solbuilder = new Solbuilder(
 
 describe('storageContract', () => {
   it('should deploy', () => {
-    return ultralightbeam.add(storageContract.solbuilder.deploy()).then((
+    return ultralightbeam.add(storageContract.solbuilder.deploy([], {
+      value: new Amorph(1, 'number')
+    })).then((
       transactionReceipt
     ) => {
       storageContract.address = transactionReceipt.contractAddress
     }).should.be.fulfilled
+  })
+
+  it('should have correct code', () => {
+    return ultralightbeam.eth.getCode(
+      storageContract.address, blockFlags.latest
+    ).should.eventually.amorphEqual(
+      storageContract.runtimeBytecode, 'hex'
+    )
+  })
+
+  it('should have correct value', () => {
+    return ultralightbeam.eth.getBalance(
+      storageContract.address, blockFlags.latest
+    ).should.eventually.amorphTo('number').equal(1)
   })
 })
 

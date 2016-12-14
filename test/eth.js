@@ -18,7 +18,6 @@ describe('eth', () => {
   let blockNumber
   const balances = []
   let contractAddress1
-  let contractAddress2
   let block1ByNumber
   let block1ByHash
   let block1ByFlag
