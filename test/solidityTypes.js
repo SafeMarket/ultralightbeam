@@ -3,6 +3,7 @@ const Solbuilder = require('../lib/Solbuilder')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
+const stripType = require('../lib/stripType')
 
 const typesContract = {
   sol: `pragma solidity ^0.4.4;
@@ -31,6 +32,21 @@ typesContract.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
 typesContract.solbuilder = new Solbuilder(
   typesContract.abi, typesContract.bytecode
 )
+
+describe('stripType', () => {
+  it('should strip "bytes"', () => {
+    stripType('bytes').should.equal('bytes')
+  })
+  it('should strip "bytes4"', () => {
+    stripType('bytes4').should.equal('bytes')
+  })
+  it('should strip "bytes32"', () => {
+    stripType('bytes32').should.equal('bytes')
+  })
+  it('should strip "uint256"', () => {
+    stripType('uint256').should.equal('uint')
+  })
+})
 
 describe('typesContract', () => {
   it('should deploy', () => {
