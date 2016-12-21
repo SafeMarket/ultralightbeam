@@ -12,18 +12,8 @@ const ultralightbeam = new Ultralightbeam(TestRPC.provider({
     }
   })
 }))
+
 ultralightbeam.defaults.gas = new Amorph(1000000, 'number')
-
-describe('ultralightbeam', () => {
-
-  it('should set ultralightbeam.defaults.from', () => {
-    return ultralightbeam
-      .eth.getAccounts()
-      .then((_accounts) => {
-        ultralightbeam.defaults.from = personas[0]
-      }).should.be.fulfilled
-  })
-
-})
+ultralightbeam.defaults.from = personas[0]
 
 module.exports = ultralightbeam
