@@ -13,7 +13,6 @@ const ultralightbeam = new Ultralightbeam(TestRPC.provider({
   })
 }))
 
-ultralightbeam.defaults.gas = new Amorph(1000000, 'number')
 ultralightbeam.defaults.from = personas[0]
 
 module.exports = ultralightbeam
