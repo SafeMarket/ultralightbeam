@@ -3,7 +3,7 @@ const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest'
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
-const Solwrapper = require('../lib/Solwrapper')
+const SolWrapper = require('../lib/SolWrapper')
 
 const storageContract = {
   sol: `pragma solidity ^0.4.4;
@@ -31,7 +31,7 @@ describe('storageContract', () => {
     )
     return ultralightbeam.sendTransaction(transactionRequest).then((transactionReceipt) => {
       storageContract.address = transactionReceipt.contractAddress
-      storageContract.solwrapper = new Solwrapper(
+      storageContract.SolWrapper = new SolWrapper(
         ultralightbeam, storageContract.abi, storageContract.address
       )
     }).should.be.fulfilled

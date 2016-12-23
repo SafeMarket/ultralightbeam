@@ -4,7 +4,7 @@ const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
 const stripType = require('../lib/stripType')
-const Solwrapper = require('../lib/Solwrapper')
+const SolWrapper = require('../lib/SolWrapper')
 
 const typesContract = {
   sol: `pragma solidity ^0.4.4;
@@ -55,7 +55,7 @@ describe('typesContract', () => {
       transactionReceipt
     ) => {
       typesContract.address = transactionReceipt.contractAddress
-      typesContract.solwrapper = new Solwrapper(
+      typesContract.SolWrapper = new SolWrapper(
         ultralightbeam, typesContract.abi, transactionReceipt.contractAddress
       )
     }).should.be.fulfilled
@@ -71,7 +71,7 @@ describe('typesContract', () => {
 
   describe('myAddress', () => {
     it('should be msg.sender', () => {
-      typesContract.solwrapper.get('myAddress()', []).should.eventually.amorphEqual(
+      typesContract.SolWrapper.get('myAddress()', []).should.eventually.amorphEqual(
         ultralightbeam.defaults.from.address, 'hex'
       )
     })
@@ -79,7 +79,7 @@ describe('typesContract', () => {
 
   describe('myBool', () => {
     it('should be true', () => {
-      typesContract.solwrapper.get('myBool()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.get('myBool()', []).should.eventually.amorphTo(
         'boolean'
       ).equal(true)
     })
@@ -87,7 +87,7 @@ describe('typesContract', () => {
 
   describe('myBytes', () => {
     it('should be 01', () => {
-      typesContract.solwrapper.get('myBytes()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.get('myBytes()', []).should.eventually.amorphTo(
         'hex'
       ).equal('01')
     })
@@ -95,7 +95,7 @@ describe('typesContract', () => {
 
   describe('myInt', () => {
     it('should be -2', () => {
-      typesContract.solwrapper.get('myInt()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.get('myInt()', []).should.eventually.amorphTo(
         'number'
       ).equal(-2)
     })
@@ -103,7 +103,7 @@ describe('typesContract', () => {
 
   describe('myString', () => {
     it('should be "3"', () => {
-      typesContract.solwrapper.get('myString()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.get('myString()', []).should.eventually.amorphTo(
         'ascii'
       ).equal('3')
     })
@@ -111,7 +111,7 @@ describe('typesContract', () => {
 
   describe('myUint', () => {
     it('should be 4', () => {
-      typesContract.solwrapper.get('myUint()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.get('myUint()', []).should.eventually.amorphTo(
         'number'
       ).equal(4)
     })

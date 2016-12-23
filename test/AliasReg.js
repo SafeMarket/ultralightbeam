@@ -1,5 +1,5 @@
 const ultralightbeam = require('./ultralightbeam')
-const Solwrapper = require('../lib/Solwrapper')
+const SolWrapper = require('../lib/SolWrapper')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
@@ -50,7 +50,7 @@ describe('AliasReg', () => {
     )
     return ultralightbeam.sendTransaction(transactionRequest).then((transactionReceipt) => {
       AliasReg.address = transactionReceipt.contractAddress
-      AliasReg.solwrapper = new Solwrapper(
+      AliasReg.SolWrapper = new SolWrapper(
         ultralightbeam, AliasReg.abi, AliasReg.address
       )
 
@@ -66,7 +66,7 @@ describe('AliasReg', () => {
   })
 
   it('myAlias should be an address', () => {
-    return AliasReg.solwrapper.get(
+    return AliasReg.SolWrapper.get(
         'getAddr(bytes32)',
         [myAlias]
       )
@@ -74,7 +74,7 @@ describe('AliasReg', () => {
   })
 
   it('myAlias should be zero', () => {
-    return AliasReg.solwrapper.get(
+    return AliasReg.SolWrapper.get(
         'getAddr(bytes32)',
         [myAlias]
       )
@@ -82,21 +82,21 @@ describe('AliasReg', () => {
   })
 
   it('myAlias claim myAlias', () => {
-    return AliasReg.solwrapper.set(
+    return AliasReg.SolWrapper.set(
         'claimAlias(bytes32)',
         [myAlias]
       ).should.eventually.be.instanceOf(TransactionReceipt)
   })
 
   it('getAddr(myAlias) should return account0', () => {
-    return AliasReg.solwrapper.get(
+    return AliasReg.SolWrapper.get(
         'getAddr(bytes32)',
         [myAlias]
       ).should.eventually.amorphEqual(ultralightbeam.defaults.from.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
-    return AliasReg.solwrapper.get(
+    return AliasReg.SolWrapper.get(
         'getAlias(address)',
         [ultralightbeam.defaults.from.address]
       ).should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))
