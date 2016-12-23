@@ -1,9 +1,10 @@
 const ultralightbeam = require('./ultralightbeam')
-const Solbuilder = require('../lib/Solbuilder')
+const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
 const stripType = require('../lib/stripType')
+const Solwrapper = require('../lib/Solwrapper')
 
 const typesContract = {
   sol: `pragma solidity ^0.4.4;
@@ -29,9 +30,6 @@ const solcOutput = solc.compile(typesContract.sol, 1).contracts.Types
 typesContract.abi = JSON.parse(solcOutput.interface)
 typesContract.bytecode = new Amorph(solcOutput.bytecode, 'hex')
 typesContract.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
-typesContract.solbuilder = new Solbuilder(
-  typesContract.abi, typesContract.bytecode
-)
 
 describe('stripType', () => {
   it('should strip "bytes"', () => {
@@ -50,12 +48,16 @@ describe('stripType', () => {
 
 describe('typesContract', () => {
   it('should deploy', () => {
-    return ultralightbeam.add(typesContract.solbuilder.deploy([], {
-      value: new Amorph(1, 'number')
-    })).then((
+    const transactionRequest = new SolDeployTransactionRequest(
+      typesContract.bytecode, typesContract.abi, []
+    )
+    return ultralightbeam.sendTransaction(transactionRequest).then((
       transactionReceipt
     ) => {
       typesContract.address = transactionReceipt.contractAddress
+      typesContract.solwrapper = new Solwrapper(
+        ultralightbeam, typesContract.abi, transactionReceipt.contractAddress
+      )
     }).should.be.fulfilled
   })
 
@@ -67,18 +69,9 @@ describe('typesContract', () => {
     )
   })
 
-  it('should have correct value', () => {
-    return ultralightbeam.eth.getBalance(
-      typesContract.address, blockFlags.latest
-    ).should.eventually.amorphTo('number').equal(1)
-  })
-
   describe('myAddress', () => {
     it('should be msg.sender', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myAddress()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphEqual(
+      typesContract.solwrapper.get('myAddress()', []).should.eventually.amorphEqual(
         ultralightbeam.defaults.from.address, 'hex'
       )
     })
@@ -86,10 +79,7 @@ describe('typesContract', () => {
 
   describe('myBool', () => {
     it('should be true', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myBool()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphTo(
+      typesContract.solwrapper.get('myBool()', []).should.eventually.amorphTo(
         'boolean'
       ).equal(true)
     })
@@ -97,10 +87,7 @@ describe('typesContract', () => {
 
   describe('myBytes', () => {
     it('should be 01', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myBytes()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphTo(
+      typesContract.solwrapper.get('myBytes()', []).should.eventually.amorphTo(
         'hex'
       ).equal('01')
     })
@@ -108,10 +95,7 @@ describe('typesContract', () => {
 
   describe('myInt', () => {
     it('should be -2', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myInt()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphTo(
+      typesContract.solwrapper.get('myInt()', []).should.eventually.amorphTo(
         'number'
       ).equal(-2)
     })
@@ -119,10 +103,7 @@ describe('typesContract', () => {
 
   describe('myString', () => {
     it('should be "3"', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myString()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphTo(
+      typesContract.solwrapper.get('myString()', []).should.eventually.amorphTo(
         'ascii'
       ).equal('3')
     })
@@ -130,10 +111,7 @@ describe('typesContract', () => {
 
   describe('myUint', () => {
     it('should be 4', () => {
-      const manifest = typesContract.solbuilder.get(
-        typesContract.address, 'myUint()', []
-      )
-      return ultralightbeam.add(manifest).should.eventually.amorphTo(
+      typesContract.solwrapper.get('myUint()', []).should.eventually.amorphTo(
         'number'
       ).equal(4)
     })

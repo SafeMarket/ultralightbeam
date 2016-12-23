@@ -7,6 +7,7 @@ const debouncedExecute = require('./lib/debouncedExecute')
 const BlockPoller = require('./lib/BlockPoller')
 const Emitter = require('events')
 const _ = require('lodash')
+const blockFlags = require('./lib/blockFlags')
 
 function Ultralightbeam(provider, defaults) {
 
@@ -28,16 +29,6 @@ function Ultralightbeam(provider, defaults) {
   this.emitter = new Emitter
 }
 
-Ultralightbeam.prototype.add = function add(manifest) {
-  // eslint-disable-next-line max-len
-  return this[manifest.protocol][manifest.name](...manifest.inputs).then((output) => {
-    if (manifest.formatter) {
-      return manifest.formatter(output)
-    }
-    return output
-  })
-}
-
 Ultralightbeam.prototype.execute = function execute() {
   return debouncedExecute(this)
 }
@@ -52,6 +43,16 @@ Ultralightbeam.prototype.reject = function reject(reason) {
 
 Ultralightbeam.prototype.resolve = function resolve(reason) {
   return Q.resolve(reason)
+}
+
+Ultralightbeam.prototype.sendTransaction = function sendTransaction(transactionRequest) {
+  return this.eth.estimateGas(transactionRequest, blockFlags.latest).then((gas) => {
+    const rawTransactionRequest = transactionRequest
+      .gas(gas, blockFlags.latest)
+      .defaults(this.defaults)
+      .toRawSigned()
+    return this.eth.sendRawTransaction(rawTransactionRequest)
+  })
 }
 
 module.exports = Ultralightbeam

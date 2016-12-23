@@ -9,18 +9,18 @@ describe('rejection', () => {
 
   it('should make 3 exeuctions', () => {
 
-    ultralightbeam.eth.sendTransaction(new TransactionRequest({
+    ultralightbeam.sendTransaction(new TransactionRequest({
       from: personas[0],
       to: personas[1].address
     }))
 
-    ultralightbeam.eth.sendTransaction(new TransactionRequest({
+    ultralightbeam.sendTransaction(new TransactionRequest({
       from: personas[0],
       to: personas[1].address,
       gas: new Amorph(9999999999999999, 'number')
     }))
 
-    ultralightbeam.eth.sendTransaction(new TransactionRequest({
+    ultralightbeam.sendTransaction(new TransactionRequest({
       from: personas[0],
       to: personas[1].address
     }))

@@ -17,7 +17,8 @@
         "no-underscore-dangle": "off",
         "no-unused-vars": "warn",
         "space-after-keywords": "off",
-        "space-return-throw-case": "off"
+        "space-return-throw-case": "off",
+        "max-len": ["warn", 100]
     },
     "globals": {
         "window": true

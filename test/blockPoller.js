@@ -35,7 +35,7 @@ describe('blockPoller', () => {
     ultralightbeam.blockPoller.promise.then((_block) => {
       block = _block
     })
-    return ultralightbeam.eth.sendTransaction(dummyTransaction)
+    return ultralightbeam.sendTransaction(dummyTransaction)
   })
 
   it('block should be instance of Block', () => {
@@ -47,7 +47,7 @@ describe('blockPoller', () => {
   })
 
   it('should send another dummy Transaction', () => {
-    ultralightbeam.eth.sendTransaction(dummyTransaction)
+    ultralightbeam.sendTransaction(dummyTransaction)
     return ultralightbeam.blockPoller.promise.should.be.fulfilled
   })
 
