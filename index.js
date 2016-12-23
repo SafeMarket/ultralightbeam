@@ -11,21 +11,23 @@ const blockFlags = require('./lib/blockFlags')
 
 function Ultralightbeam(provider, defaults) {
 
-  this.defaults = _.merge({
+  this.defaults =  {
+    blockPollerInterval: 1000,
     maxBlocksToWait: 3
-  }, defaults || {})
+  }
+  _.merge(this.defaults, defaults || {})
 
   this.id = 0
   this.provider = provider
   this.batch = new Batch(this)
   this.batches = []
-  this.defaults = defaults || {}
   this.web3 = new Protocol(this, interfaces.web3)
   this.net = new Protocol(this, interfaces.net)
   this.eth = new Protocol(this, interfaces.eth)
   this.miner = new Protocol(this, interfaces.miner)
   this.blockPoller = new BlockPoller(this)
-  this.blockPoller.start(1000)
+
+  this.blockPoller.start(this.defaults.blockPollerInterval)
   this.emitter = new Emitter
 }
 
