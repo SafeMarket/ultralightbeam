@@ -5,6 +5,7 @@ const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
 const stripType = require('../lib/stripType')
 const SolWrapper = require('../lib/SolWrapper')
+const persona = require('../modules/persona')
 
 const typesContract = {
   sol: `pragma solidity ^0.4.4;
@@ -72,7 +73,7 @@ describe('typesContract', () => {
   describe('myAddress', () => {
     it('should be msg.sender', () => {
       typesContract.SolWrapper.get('myAddress()', []).should.eventually.amorphEqual(
-        ultralightbeam.defaults.from.address, 'hex'
+        persona.address, 'hex'
       )
     })
   })

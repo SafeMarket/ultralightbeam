@@ -10,6 +10,7 @@ const personas = require('../modules/personas')
 const Block = require('../lib/Block')
 const SolidityOutput = require('../lib/SolidityOutput')
 const blockFlags = require('../lib/blockFlags')
+const persona = require('../modules/persona')
 
 describe('eth', () => {
 
@@ -99,7 +100,7 @@ describe('eth', () => {
     it('should get pos1[msg.sender] ', () => {
       const keyArray = []
         .concat(new Array(12).fill(0))
-        .concat(ultralightbeam.defaults.from.address.to('array'))
+        .concat(persona.address.to('array'))
         .concat(new Array(31).fill(0))
         .concat([1])
       const key = new Amorph(keyArray, 'array')
@@ -191,7 +192,7 @@ describe('eth', () => {
 
     it('should return 21000 for a simple transfer', () => {
       const transactionRequest = new TransactionRequest({
-        from: personas[0],
+        from: persona,
         to: accounts[1],
         value: new Amorph(1, 'number')
       })

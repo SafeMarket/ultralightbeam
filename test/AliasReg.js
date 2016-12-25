@@ -5,6 +5,7 @@ const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
 const TransactionReceipt = require('../lib/TransactionReceipt')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
+const persona = require('../modules/persona')
 
 const AliasReg = {
   sol: `pragma solidity ^0.4.4;
@@ -92,13 +93,13 @@ describe('AliasReg', () => {
     return AliasReg.SolWrapper.get(
         'getAddr(bytes32)',
         [myAlias]
-      ).should.eventually.amorphEqual(ultralightbeam.defaults.from.address, 'hex')
+      ).should.eventually.amorphEqual(persona.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
     return AliasReg.SolWrapper.get(
         'getAlias(address)',
-        [ultralightbeam.defaults.from.address]
+        [persona.address]
       ).should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))
   })
 

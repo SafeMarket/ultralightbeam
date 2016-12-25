@@ -47,13 +47,6 @@ describe('TransactionRequest', () => {
     }).should.throw(personaValidator.Error)
   })
 
-  it('should throw validation error with bad from (chain)', () => {
-    (() => {
-      // eslint-disable-next-line no-new
-      (new TransactionRequest).from(new Amorph('01', 'hex'))
-    }).should.throw(personaValidator.Error)
-  })
-
   it('should throw validation error with bad tp', () => {
     (() => {
       // eslint-disable-next-line no-new
@@ -70,14 +63,6 @@ describe('TransactionRequest', () => {
         bogus: new Amorph('01', 'hex')
       })
     }).should.throw(transactionRequestFieldValidator.Error)
-  })
-
-  it('should chain', () => {
-    (new TransactionRequest)
-      .from(personas[0])
-      .gas(new Amorph(1, 'number'))
-      .toPojo()
-      .should.have.all.keys('gas', 'from')
   })
 
 })

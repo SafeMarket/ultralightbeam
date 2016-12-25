@@ -9,13 +9,17 @@ const Emitter = require('events')
 const _ = require('lodash')
 const blockFlags = require('./lib/blockFlags')
 
-function Ultralightbeam(provider, defaults) {
+function Ultralightbeam(provider, _options) {
 
-  this.defaults =  {
+  this.options =  {
     blockPollerInterval: 1000,
-    maxBlocksToWait: 3
+    maxBlocksToWait: 3,
+    transactionApprover: (transactionRequest, gas) => {
+      transactionRequest.set('gas', gas)
+      return this.resolve(transactionRequest)
+    }
   }
-  _.merge(this.defaults, defaults || {})
+  _.merge(this.options, _options || {})
 
   this.id = 0
   this.provider = provider
@@ -27,7 +31,7 @@ function Ultralightbeam(provider, defaults) {
   this.miner = new Protocol(this, interfaces.miner)
   this.blockPoller = new BlockPoller(this)
 
-  this.blockPoller.start(this.defaults.blockPollerInterval)
+  this.blockPoller.start(this.options.blockPollerInterval)
   this.emitter = new Emitter
 }
 
@@ -47,13 +51,15 @@ Ultralightbeam.prototype.resolve = function resolve(reason) {
   return Q.resolve(reason)
 }
 
-Ultralightbeam.prototype.sendTransaction = function sendTransaction(transactionRequest) {
-  return this.eth.estimateGas(transactionRequest, blockFlags.latest).then((gas) => {
-    const rawTransactionRequest = transactionRequest
-      .gas(gas, blockFlags.latest)
-      .defaults(this.defaults)
-      .toRawSigned()
-    return this.eth.sendRawTransaction(rawTransactionRequest)
+Ultralightbeam.prototype.sendTransaction = function sendTransaction(
+  _transactionRequest, _transactionApprover
+) {
+  const transactionApprover = _transactionApprover || this.options.transactionApprover
+  return this.eth.estimateGas(_transactionRequest, blockFlags.latest).then((gas) => {
+    return transactionApprover(_transactionRequest, gas).then((transactionRequest) => {
+      const rawTransactionRequest = transactionRequest.toRawSigned()
+      return this.eth.sendRawTransaction(rawTransactionRequest)
+    })
   })
 }
 
