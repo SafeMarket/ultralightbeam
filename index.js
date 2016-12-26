@@ -15,7 +15,9 @@ function Ultralightbeam(provider, _options) {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
     transactionApprover: (transactionRequest, gas) => {
-      transactionRequest.set('gas', gas)
+      if (!transactionRequest.values.gas) {
+        transactionRequest.set('gas', gas)
+      }
       return this.resolve(transactionRequest)
     }
   }
