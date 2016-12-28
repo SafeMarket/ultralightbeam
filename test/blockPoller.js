@@ -32,7 +32,7 @@ describe('blockPoller', () => {
   })
 
   it('should wait for promise to be fulfilled', () => {
-    ultralightbeam.blockPoller.promise.then((_block) => {
+    ultralightbeam.blockPoller.blockPromise.then((_block) => {
       block = _block
     })
     return ultralightbeam.sendTransaction(dummyTransaction)
@@ -52,7 +52,7 @@ describe('blockPoller', () => {
 
   it('should send another dummy Transaction', () => {
     ultralightbeam.sendTransaction(dummyTransaction)
-    return ultralightbeam.blockPoller.promise.should.be.fulfilled
+    return ultralightbeam.blockPoller.blockPromise.should.be.fulfilled
   })
 
   it('blocks should be array of block #1 and block # 2', () => {
@@ -66,5 +66,12 @@ describe('blockPoller', () => {
       blockNumber.to('number') + 2
     )
   })
+
+  it('blockPoller.gasPrice should be 2 Szabo', () => {
+    const twoSzabo = 20000000000
+    ultralightbeam.blockPoller.gasPrice.should.amorphTo('number').equal(twoSzabo)
+  })
+
+  // ToDo: test gasPrice event (doesn't look like there's a way to trigger it in testrpc)
 
 })

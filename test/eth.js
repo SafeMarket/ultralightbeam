@@ -188,6 +188,15 @@ describe('eth', () => {
 
   })
 
+  describe('getGasPrice', () => {
+
+    it('should be 2 Szabo', () => {
+      const twoSzabo = 20000000000
+      return ultralightbeam.eth.getGasPrice().should.eventually.amorphTo('number').equal(twoSzabo)
+    })
+
+  })
+
   describe('estimateGas', () => {
 
     it('should return 21000 for a simple transfer', () => {
