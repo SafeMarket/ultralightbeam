@@ -42,6 +42,10 @@ describe('blockPoller', () => {
     block.should.be.instanceOf(Block)
   })
 
+  it('block should be attached to blockPoller as blockPoller.block', () => {
+    block.should.equal(ultralightbeam.blockPoller.block)
+  })
+
   it('block.number should be blockNumber + 1', () => {
     block.number.to('number').should.equal(blockNumber.to('number') + 1)
   })
