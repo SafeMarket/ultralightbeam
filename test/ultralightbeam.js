@@ -1,4 +1,3 @@
-const Amorph = require('../lib/Amorph')
 const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
@@ -6,10 +5,10 @@ const persona = require('../modules/persona')
 
 const provider = TestRPC.provider({
   blocktime: 2,
-  accounts: personas.map((persona) => {
+  accounts: personas.map((_persona) => {
     return {
-      balance: persona.balance.to('number'),
-      secretKey: persona.privateKey.to('hex.prefixed')
+      balance: _persona.balance.to('number'),
+      secretKey: _persona.privateKey.to('hex.prefixed')
     }
   })
 })

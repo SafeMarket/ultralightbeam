@@ -3,7 +3,6 @@ const SolWrapper = require('../lib/SolWrapper')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const blockFlags = require('../lib/blockFlags')
-const TransactionReceipt = require('../lib/TransactionReceipt')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const persona = require('../modules/persona')
 
@@ -49,7 +48,9 @@ describe('AliasReg', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       AliasReg.bytecode, AliasReg.abi, []
     )
-    return ultralightbeam.sendTransaction(transactionRequest).then((transactionReceipt) => {
+    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
+      transactionReceipt
+    ) => {
       AliasReg.address = transactionReceipt.contractAddress
       AliasReg.SolWrapper = new SolWrapper(
         ultralightbeam, AliasReg.abi, AliasReg.address
@@ -86,7 +87,7 @@ describe('AliasReg', () => {
     return AliasReg.SolWrapper.set(
         'claimAlias(bytes32)',
         [myAlias]
-      ).should.eventually.be.instanceOf(TransactionReceipt)
+      ).transactionPromise.should.eventually.be.fulfilled
   })
 
   it('getAddr(myAlias) should return account0', () => {

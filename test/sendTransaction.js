@@ -5,7 +5,9 @@ const storageContract = require('./storageContract')
 const personas = require('../modules/personas')
 const Amorph = require('Amorph')
 const Q = require('q')
+const Transaction = require('../lib/Transaction')
 const TransactionReceipt = require('../lib/TransactionReceipt')
+const TransactionMonitor = require('../lib/TransactionMonitor')
 
 describe('sendTransaction', () => {
 
@@ -29,12 +31,43 @@ describe('sendTransaction', () => {
 
   })
 
+  let transactionMonitor
+  let transactionHash
+
   it('should send 1 wei from account0 to account1', () => {
-    return ultralightbeam.sendTransaction(new TransactionRequest({
+    transactionMonitor = ultralightbeam.sendTransaction(new TransactionRequest({
       from: personas[0],
       to: personas[1].address,
       value: new Amorph(1, 'number')
-    })).should.eventually.be.instanceOf(TransactionReceipt)
+    }))
+  })
+
+  it('transactionMonitor should be instance of TransactionMonitor', () => {
+    transactionMonitor.should.be.instanceOf(TransactionMonitor)
+  })
+
+  it('transactionHashPromise should be fulfilled', () => {
+    return transactionMonitor.transactionHashPromise.then((_transactionHash) => {
+      transactionHash = _transactionHash
+    }).should.be.fulfilled
+  })
+
+  it('transactionHash should be an Amorph', () => {
+    transactionHash.should.be.instanceOf(Amorph)
+  })
+
+  it('transactionHash should be 32 bytes long', () => {
+    transactionHash.to('array').should.have.length(32)
+  })
+
+  it('transactionPromise should eventually return a Transaction', () => {
+    return transactionMonitor.transactionPromise.should.eventually.be.instanceOf(Transaction)
+  })
+
+  it('getTransactionReceipt() should eventually return a transactionReceipt', () => {
+    return transactionMonitor.getTransactionReceipt().should.eventually.be.instanceOf(
+      TransactionReceipt
+    )
   })
 
   it('account1 balance should have increased by 1', () => {
@@ -55,12 +88,11 @@ describe('sendTransaction', () => {
       gas: new Amorph(3141592, 'number')
     })
 
-    return ultralightbeam.sendTransaction(transactionRequest).then((
+    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       transactionReceipt
     ) => {
       contractAddress1 = transactionReceipt.contractAddress
-      return transactionReceipt
-    }).should.eventually.be.instanceof(TransactionReceipt)
+    }).should.be.fulfilled
 
   })
 

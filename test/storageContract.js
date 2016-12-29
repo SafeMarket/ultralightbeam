@@ -29,7 +29,9 @@ describe('storageContract', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       storageContract.bytecode, storageContract.abi, [], { value: new Amorph(1, 'number') }
     )
-    return ultralightbeam.sendTransaction(transactionRequest).then((transactionReceipt) => {
+    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
+      transactionReceipt
+    ) => {
       storageContract.address = transactionReceipt.contractAddress
       storageContract.SolWrapper = new SolWrapper(
         ultralightbeam, storageContract.abi, storageContract.address

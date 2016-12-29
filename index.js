@@ -7,7 +7,7 @@ const debouncedExecute = require('./lib/debouncedExecute')
 const BlockPoller = require('./lib/BlockPoller')
 const Emitter = require('events')
 const _ = require('lodash')
-const blockFlags = require('./lib/blockFlags')
+const TransactionMonitor = require('./lib/TransactionMonitor')
 
 function Ultralightbeam(provider, _options) {
 
@@ -54,15 +54,16 @@ Ultralightbeam.prototype.resolve = function resolve(reason) {
 }
 
 Ultralightbeam.prototype.sendTransaction = function sendTransaction(
-  _transactionRequest, _transactionApprover
+  transactionRequest, _transactionApprover, _maxBlocksToWait
 ) {
   const transactionApprover = _transactionApprover || this.options.transactionApprover
-  return this.eth.estimateGas(_transactionRequest, blockFlags.latest).then((gas) => {
-    return transactionApprover(_transactionRequest, gas).then((transactionRequest) => {
-      const rawTransactionRequest = transactionRequest.toRawSigned()
-      return this.eth.sendRawTransaction(rawTransactionRequest)
-    })
-  })
+  const maxBlocksToWait = _maxBlocksToWait || this.options.maxBlocksToWait
+  return new TransactionMonitor(
+    this,
+    transactionRequest,
+    transactionApprover,
+    maxBlocksToWait
+  )
 }
 
 module.exports = Ultralightbeam

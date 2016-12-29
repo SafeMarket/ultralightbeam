@@ -52,12 +52,12 @@ describe('typesContract', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       typesContract.bytecode, typesContract.abi, []
     )
-    return ultralightbeam.sendTransaction(transactionRequest).then((
+    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       transactionReceipt
     ) => {
       typesContract.address = transactionReceipt.contractAddress
       typesContract.SolWrapper = new SolWrapper(
-        ultralightbeam, typesContract.abi, transactionReceipt.contractAddress
+        ultralightbeam, typesContract.abi, typesContract.address
       )
     }).should.be.fulfilled
   })
