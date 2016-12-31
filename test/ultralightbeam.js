@@ -2,6 +2,8 @@ const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
 const persona = require('../modules/persona')
+const blockFlags = require('../lib/blockFlags')
+const Amorph = require('../lib/Amorph')
 
 const provider = TestRPC.provider({
   blocktime: 2,
@@ -16,7 +18,13 @@ const ultralightbeam = new Ultralightbeam(provider, {
   transactionApprover: (transactionRequest, gas) => {
     transactionRequest.set('gas', gas)
     transactionRequest.set('from', persona)
-    return ultralightbeam.resolve(transactionRequest)
+    const blockFlag = blockFlags.latest
+    return ultralightbeam.eth.getTransactionCount(
+      persona.address, blockFlag
+    ).then((transactionCount) => {
+      transactionRequest.set('nonce', transactionCount)
+      return transactionRequest
+    })
   }
 })
 

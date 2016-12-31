@@ -26,7 +26,8 @@ describe('TransactionRequest', () => {
     transactionRequest2 = new TransactionRequest({
       from: personas[0],
       to: personas[1].address,
-      data: new Amorph('01', 'hex')
+      data: new Amorph('01', 'hex'),
+      nonce: new Amorph('01', 'hex')
     })
   })
 
@@ -35,7 +36,7 @@ describe('TransactionRequest', () => {
   })
 
   it('.toPojo should have keys [from, to, data] ', () => {
-    transactionRequest2.toPojo().should.have.all.keys('from', 'to', 'data')
+    transactionRequest2.toPojo().should.have.all.keys('from', 'to', 'data', 'nonce')
   })
 
   it('should throw validation error with bad from', () => {

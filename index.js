@@ -18,6 +18,15 @@ function Ultralightbeam(provider, _options) {
       if (!transactionRequest.values.gas) {
         transactionRequest.set('gas', gas)
       }
+
+      if (transactionRequest.values.from && !transactionRequest.values.nonce) {
+        return this.eth.getTransactionCount(transactionRequest.values.from.address).then((
+          transactionCount
+        ) => {
+          transactionRequest.set('nonce', transactionCount)
+          return transactionRequest
+        })
+      }
       return this.resolve(transactionRequest)
     }
   }
