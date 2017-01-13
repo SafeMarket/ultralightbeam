@@ -68,7 +68,7 @@ describe('AliasReg', () => {
   })
 
   it('myAlias should be an address', () => {
-    return AliasReg.SolWrapper.get(
+    return AliasReg.SolWrapper.fetch(
         'getAddr(bytes32)',
         [myAlias]
       )
@@ -76,7 +76,7 @@ describe('AliasReg', () => {
   })
 
   it('myAlias should be zero', () => {
-    return AliasReg.SolWrapper.get(
+    return AliasReg.SolWrapper.fetch(
         'getAddr(bytes32)',
         [myAlias]
       )
@@ -84,21 +84,21 @@ describe('AliasReg', () => {
   })
 
   it('myAlias claim myAlias', () => {
-    return AliasReg.SolWrapper.set(
+    return AliasReg.SolWrapper.broadcast(
         'claimAlias(bytes32)',
         [myAlias]
       ).transactionPromise.should.eventually.be.fulfilled
   })
 
   it('getAddr(myAlias) should return account0', () => {
-    return AliasReg.SolWrapper.get(
+    return AliasReg.SolWrapper.fetch(
         'getAddr(bytes32)',
         [myAlias]
       ).should.eventually.amorphEqual(persona.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
-    return AliasReg.SolWrapper.get(
+    return AliasReg.SolWrapper.fetch(
         'getAlias(address)',
         [persona.address]
       ).should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))

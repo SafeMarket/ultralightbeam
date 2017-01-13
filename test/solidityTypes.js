@@ -72,7 +72,7 @@ describe('typesContract', () => {
 
   describe('myAddress', () => {
     it('should be msg.sender', () => {
-      typesContract.SolWrapper.get('myAddress()', []).should.eventually.amorphEqual(
+      typesContract.SolWrapper.fetch('myAddress()', []).should.eventually.amorphEqual(
         persona.address, 'hex'
       )
     })
@@ -80,7 +80,7 @@ describe('typesContract', () => {
 
   describe('myBool', () => {
     it('should be true', () => {
-      typesContract.SolWrapper.get('myBool()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.fetch('myBool()', []).should.eventually.amorphTo(
         'boolean'
       ).equal(true)
     })
@@ -88,7 +88,7 @@ describe('typesContract', () => {
 
   describe('myBytes', () => {
     it('should be 01', () => {
-      typesContract.SolWrapper.get('myBytes()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.fetch('myBytes()', []).should.eventually.amorphTo(
         'hex'
       ).equal('01')
     })
@@ -96,7 +96,7 @@ describe('typesContract', () => {
 
   describe('myInt', () => {
     it('should be -2', () => {
-      typesContract.SolWrapper.get('myInt()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.fetch('myInt()', []).should.eventually.amorphTo(
         'number'
       ).equal(-2)
     })
@@ -104,7 +104,7 @@ describe('typesContract', () => {
 
   describe('myString', () => {
     it('should be "3"', () => {
-      typesContract.SolWrapper.get('myString()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.fetch('myString()', []).should.eventually.amorphTo(
         'ascii'
       ).equal('3')
     })
@@ -112,7 +112,7 @@ describe('typesContract', () => {
 
   describe('myUint', () => {
     it('should be 4', () => {
-      typesContract.SolWrapper.get('myUint()', []).should.eventually.amorphTo(
+      typesContract.SolWrapper.fetch('myUint()', []).should.eventually.amorphTo(
         'number'
       ).equal(4)
     })
