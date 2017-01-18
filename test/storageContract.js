@@ -2,7 +2,6 @@ const ultralightbeam = require('./ultralightbeam')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
-const blockFlags = require('../lib/blockFlags')
 const SolWrapper = require('../lib/SolWrapper')
 
 const storageContract = {
@@ -40,17 +39,13 @@ describe('storageContract', () => {
   })
 
   it('should have correct code', () => {
-    return ultralightbeam.eth.getCode(
-      storageContract.address, blockFlags.latest
-    ).should.eventually.amorphEqual(
+    return ultralightbeam.eth.getCode(storageContract.address).should.eventually.amorphEqual(
       storageContract.runtimeBytecode, 'hex'
     )
   })
 
   it('should have correct value', () => {
-    return ultralightbeam.eth.getBalance(
-      storageContract.address, blockFlags.latest
-    ).should.eventually.amorphTo('number').equal(1)
+    return ultralightbeam.eth.getBalance(storageContract.address).should.eventually.amorphTo('number').equal(1)
   })
 })
 

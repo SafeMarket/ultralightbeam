@@ -2,7 +2,6 @@ const ultralightbeam = require('./ultralightbeam')
 const SolWrapper = require('../lib/SolWrapper')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
-const blockFlags = require('../lib/blockFlags')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const persona = require('../modules/persona')
 
@@ -60,9 +59,7 @@ describe('AliasReg', () => {
   })
 
   it('should have correct runtimeBytecode', () => {
-    ultralightbeam.eth.getCode(
-      AliasReg.address, blockFlags.latest
-    ).should.eventually.amorphEqual(
+    ultralightbeam.eth.getCode(AliasReg.address).should.eventually.amorphEqual(
       AliasReg.runtimeBytecode, 'hex'
     )
   })

@@ -9,8 +9,8 @@ const TransactionReceipt = require('../lib/TransactionReceipt')
 const personas = require('../modules/personas')
 const Block = require('../lib/Block')
 const SolidityOutput = require('../lib/SolidityOutput')
-const blockFlags = require('../lib/blockFlags')
 const persona = require('../modules/persona')
+const blockFlags = require('../lib/blockFlags')
 
 describe('eth', () => {
 
@@ -57,8 +57,7 @@ describe('eth', () => {
 
       accounts.forEach((account) => {
         const promise = ultralightbeam
-          .eth.getBalance(account, blockFlags.latest)
-          .then((balance) => {
+          .eth.getBalance(account).then((balance) => {
             balances.push(balance)
           })
         promises.push(promise)
@@ -91,8 +90,7 @@ describe('eth', () => {
       return ultralightbeam
         .eth.getStorageAt(
           storageContract.address,
-          new Amorph(positionArray, 'array'),
-          blockFlags.latest
+          new Amorph(positionArray, 'array')
         )
         .should.eventually.amorphTo('number').equal(1234)
     })
@@ -108,7 +106,7 @@ describe('eth', () => {
       const position = new Amorph(positionHex, 'hex')
 
       return ultralightbeam
-        .eth.getStorageAt(storageContract.address, position, blockFlags.latest)
+        .eth.getStorageAt(storageContract.address, position)
         .should.eventually.amorphTo('number').equal(5678)
     })
 
@@ -118,24 +116,21 @@ describe('eth', () => {
 
     it('account0 should be instanceof Amorph', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[0],
-          blockFlags.latest
+          accounts[0]
         )
         .should.eventually.be.instanceof(Amorph)
     })
 
     it('account0 should be greater than zero', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[0],
-          blockFlags.latest
+          accounts[0]
         )
         .should.eventually.amorphTo('number').be.greaterThan(0)
     })
 
     it('account1 should be zero', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[1],
-          blockFlags.latest
+          accounts[1]
         )
         .should.eventually.amorphTo('number').equal(0)
     })
@@ -145,14 +140,13 @@ describe('eth', () => {
   describe('getCode', () => {
     it('should be zeros for account0', () => {
       return ultralightbeam.eth.getCode(
-        accounts[0],
-        blockFlags.latest
+        accounts[0]
       ).should.eventually.amorphTo('number').equal(0)
     })
 
     it('should not be empty for storageContract.address ', () => {
       return ultralightbeam
-        .eth.getCode(storageContract.address, blockFlags.latest)
+        .eth.getCode(storageContract.address)
         .should.eventually.amorphEqual(storageContract.runtimeBytecode)
     })
   })
@@ -206,8 +200,7 @@ describe('eth', () => {
         value: new Amorph(1, 'number')
       })
       return ultralightbeam.eth.estimateGas(
-        transactionRequest,
-        blockFlags.latest
+        transactionRequest
       ).should.eventually.amorphTo('number').equal(21000)
     })
 

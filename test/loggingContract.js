@@ -2,7 +2,6 @@ const ultralightbeam = require('./ultralightbeam')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
-const blockFlags = require('../lib/blockFlags')
 const SolWrapper = require('../lib/SolWrapper')
 
 const loggingContract = {
@@ -41,9 +40,7 @@ describe('loggingContract', () => {
   })
 
   it('should have correct code', () => {
-    return ultralightbeam.eth.getCode(
-      loggingContract.address, blockFlags.latest
-    ).should.eventually.amorphEqual(
+    return ultralightbeam.eth.getCode(loggingContract.address).should.eventually.amorphEqual(
       loggingContract.runtimeBytecode, 'hex'
     )
   })

@@ -14,13 +14,13 @@ describe('validation', () => {
 
   it('should throw ArgumentsLengthError', () => {
     (() => {
-      ultralightbeam.eth.getBalance(personas[0].address)
+      ultralightbeam.eth.getBalance(personas[0].address, 'latest')
     }).should.throw(errors.ArgumentsLengthError)
   })
 
   it('should throw validators.blockFlag.Error', () => {
     (() => {
-      ultralightbeam.eth.getBalance(personas[0].address, {})
+      ultralightbeam.eth.getBlockByFlag(personas[0].address, false)
     }).should.throw(blockFlagValidator.Error)
   })
 

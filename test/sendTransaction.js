@@ -1,6 +1,5 @@
 const ultralightbeam = require('./ultralightbeam')
 const TransactionRequest = require('../lib/TransactionRequest')
-const blockFlags = require('../lib/blockFlags')
 const storageContract = require('./storageContract')
 const personas = require('../modules/personas')
 const Amorph = require('Amorph')
@@ -20,7 +19,7 @@ describe('sendTransaction', () => {
 
     personas.forEach((persona) => {
       const promise = ultralightbeam
-        .eth.getBalance(persona.address, blockFlags.latest)
+        .eth.getBalance(persona.address)
         .then((balance) => {
           balances.push(balance)
         })
@@ -71,10 +70,7 @@ describe('sendTransaction', () => {
   })
 
   it('account1 balance should have increased by 1', () => {
-    return ultralightbeam.eth.getBalance(
-      personas[1].address,
-      blockFlags.latest
-    )
+    return ultralightbeam.eth.getBalance(personas[1].address)
     .should.eventually.amorphTo('number').equal(
       balances[1].to('number') + 1
     )
@@ -97,10 +93,9 @@ describe('sendTransaction', () => {
   })
 
   it('contract address code should be correct', () => {
-    return ultralightbeam.eth.getCode(
-      contractAddress1,
-      blockFlags.latest
-    ).should.eventually.amorphEqual(storageContract.runtimeBytecode)
+    return ultralightbeam.eth.getCode(contractAddress1).should.eventually.amorphEqual(
+      storageContract.runtimeBytecode
+    )
   })
 
 })
