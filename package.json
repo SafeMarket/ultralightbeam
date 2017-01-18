@@ -29,11 +29,11 @@
     "solc": "^0.4.4"
   },
   "dependencies": {
-    "amorph": "^0.2.0",
-    "amorph-base58": "0.0.1",
-    "amorph-bignumber": "0.0.4",
-    "amorph-buffer": "0.0.1",
-    "amorph-hex": "0.0.2",
+    "amorph": "^1.0.0",
+    "amorph-base58": "^1.0.0",
+    "amorph-bignumber": "^1.0.0",
+    "amorph-buffer": "^1.0.0",
+    "amorph-hex": "^1.0.2",
     "bulk-require": "^1.0.0",
     "ethereumjs-tx": "^1.1.4",
     "is-pojo": "^1.0.2",
