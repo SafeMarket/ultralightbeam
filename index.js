@@ -14,20 +14,32 @@ function Ultralightbeam(provider, _options) {
   this.options =  {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
-    transactionApprover: (transactionRequest, gas) => {
+    transactionApprover: (transactionRequest) => {
+
+      const promises = []
+
       if (!transactionRequest.values.gas) {
-        transactionRequest.set('gas', gas)
+        const gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
+          transactionRequest.set('gas', gas)
+        })
+
+        promises.push(gasPromise)
       }
 
       if (transactionRequest.values.from && !transactionRequest.values.nonce) {
-        return this.eth.getTransactionCount(transactionRequest.values.from.address).then((
+        const noncePromise =  this.eth.getTransactionCount(
+          transactionRequest.values.from.address
+        ).then((
           transactionCount
         ) => {
           transactionRequest.set('nonce', transactionCount)
-          return transactionRequest
         })
+        promises.push(noncePromise)
       }
-      return this.resolve(transactionRequest)
+
+      return Q.all(promises).then(() => {
+        return transactionRequest
+      })
     }
   }
   _.merge(this.options, _options || {})
