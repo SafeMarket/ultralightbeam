@@ -17,7 +17,7 @@ const provider = TestRPC.provider({
   })
 })
 const ultralightbeam = new Ultralightbeam(provider, {
-  transactionApprover: (transactionRequest) => {
+  transactionHook: (transactionRequest) => {
 
     transactionRequest.set('from', persona)
 

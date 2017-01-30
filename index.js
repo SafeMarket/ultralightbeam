@@ -14,7 +14,7 @@ function Ultralightbeam(provider, _options) {
   this.options =  {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
-    transactionApprover: (transactionRequest) => {
+    transactionHook: (transactionRequest) => {
 
       const promises = []
 
@@ -75,14 +75,14 @@ Ultralightbeam.prototype.resolve = function resolve(reason) {
 }
 
 Ultralightbeam.prototype.sendTransaction = function sendTransaction(
-  transactionRequest, _transactionApprover, _maxBlocksToWait
+  transactionRequest, _transactionHook, _maxBlocksToWait
 ) {
-  const transactionApprover = _transactionApprover || this.options.transactionApprover
+  const transactionHook = _transactionHook || this.options.transactionHook
   const maxBlocksToWait = _maxBlocksToWait || this.options.maxBlocksToWait
   return new TransactionMonitor(
     this,
     transactionRequest,
-    transactionApprover,
+    transactionHook,
     maxBlocksToWait
   )
 }
