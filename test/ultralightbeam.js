@@ -21,6 +21,10 @@ const ultralightbeam = new Ultralightbeam(provider, {
 
     transactionRequest.set('from', persona)
 
+    if (ultralightbeam.gasPrice) {
+      transactionRequest.set('gasPrice', ultralightbeam.gasPrice)
+    }
+
     const promises = []
 
     if (!transactionRequest.values.gas) {

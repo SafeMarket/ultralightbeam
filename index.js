@@ -18,6 +18,10 @@ function Ultralightbeam(provider, _options) {
 
       const promises = []
 
+      if (ultralightbeam.gasPrice) {
+        transactionRequest.set('gasPrice', ultralightbeam.gasPrice)
+      }
+
       if (!transactionRequest.values.gas) {
         const gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
           transactionRequest.set('gas', gas)
