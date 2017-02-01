@@ -26,6 +26,10 @@ const arrayValContract = {
           function getUintsAndBools() constant returns(uint[], bool[]) {
             return (uints, bools);
           }
+
+          function getUintsAndBoolsWithNames() constant returns(uint[] myUints, bool[] myBools) {
+            return (uints, bools);
+          }
         }`
 }
 
@@ -123,6 +127,25 @@ describe('arrayValContract', () => {
 
       values[1][0].should.amorphTo('boolean').equal(false)
       values[1][1].should.amorphTo('boolean').equal(true)
+    })
+  })
+
+  it('should getUintsAndBoolsWithNames() values { myUints: [3, 4, 5], myBools: [false, true] }', () => {
+    return arrayValContract.SolWrapper.fetch('getUintsAndBoolsWithNames()', []).then((values) => {
+      values.should.have.keys(['myUints', 'myBools'])
+
+      values.myUints.should.be.instanceOf(Array)
+      values.myBools.should.be.instanceOf(Array)
+
+      values.myUints.should.have.length(3)
+      values.myBools.should.have.length(2)
+
+      values.myUints[0].should.amorphTo('number').equal(3)
+      values.myUints[1].should.amorphTo('number').equal(4)
+      values.myUints[2].should.amorphTo('number').equal(5)
+
+      values.myBools[0].should.amorphTo('boolean').equal(false)
+      values.myBools[1].should.amorphTo('boolean').equal(true)
     })
   })
 })

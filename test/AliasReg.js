@@ -5,6 +5,8 @@ const Amorph = require('../lib/Amorph')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const persona = require('../modules/persona')
 
+require('./arrayValContract')
+
 const AliasReg = {
   sol: `pragma solidity ^0.4.4;
         contract AliasReg {
