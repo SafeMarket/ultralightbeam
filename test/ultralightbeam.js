@@ -3,6 +3,7 @@ const TestRPC = require('ethereumjs-testrpc')
 const personas = require('../modules/personas')
 const persona = require('../modules/persona')
 const Q = require('q')
+const Amorph = require('../lib/Amorph')
 
 const gasLimit = 4000000
 

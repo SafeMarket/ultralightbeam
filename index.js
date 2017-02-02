@@ -14,6 +14,7 @@ function Ultralightbeam(provider, _options) {
   this.options =  {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
+    deduceOOGErrors: true,
     transactionHook: (transactionRequest) => {
 
       const promises = []

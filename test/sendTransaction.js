@@ -63,7 +63,7 @@ describe('sendTransaction', () => {
     return transactionMonitor.transactionPromise.should.eventually.be.instanceOf(Transaction)
   })
 
-  it('getTransactionReceipt() should eventually return a transactionReceipt', () => {
+  it('getConfirmation() should eventually return a transactionReceipt', () => {
     return transactionMonitor.getTransactionReceipt().should.eventually.be.instanceOf(
       TransactionReceipt
     )
