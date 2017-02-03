@@ -4,6 +4,8 @@ const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const SolWrapper = require('../lib/SolWrapper')
 const errors = require('../lib/errors')
+const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const _ = require('lodash')
 
 const oogContract = {
   sol: `pragma solidity ^0.4.4;
@@ -20,11 +22,7 @@ const oogContract = {
         }`
 }
 
-const solcOutput = solc.compile(oogContract.sol, 1).contracts.OOG
-
-oogContract.abi = JSON.parse(solcOutput.interface)
-oogContract.bytecode = new Amorph(solcOutput.bytecode, 'hex')
-oogContract.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
+_.merge(oogContract, amorphParseSolcOutput(solc.compile(oogContract.sol, 1)).OOG)
 
 describe('oogContract', () => {
 
@@ -32,7 +30,7 @@ describe('oogContract', () => {
 
   it('should deploy', () => {
     const transactionRequest = new SolDeployTransactionRequest(
-      oogContract.bytecode, oogContract.abi, []
+      oogContract.code, oogContract.abi, []
     )
     return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       transactionReceipt

@@ -3,6 +3,8 @@ const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest'
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const SolWrapper = require('../lib/SolWrapper')
+const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const _ = require('lodash')
 
 const loggingContract = {
   sol: `pragma solidity ^0.4.4;
@@ -15,11 +17,7 @@ const loggingContract = {
         }`
 }
 
-const solcOutput = solc.compile(loggingContract.sol, 1).contracts.Logging
-
-loggingContract.abi = JSON.parse(solcOutput.interface)
-loggingContract.bytecode = new Amorph(solcOutput.bytecode, 'hex')
-loggingContract.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
+_.merge(loggingContract, amorphParseSolcOutput(solc.compile(loggingContract.sol, 1)).Logging)
 
 describe('loggingContract', () => {
 
@@ -27,7 +25,7 @@ describe('loggingContract', () => {
 
   it('should deploy', () => {
     const transactionRequest = new SolDeployTransactionRequest(
-      loggingContract.bytecode, loggingContract.abi, []
+      loggingContract.code, loggingContract.abi, []
     )
     return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       _transactionReceipt
@@ -41,7 +39,7 @@ describe('loggingContract', () => {
 
   it('should have correct code', () => {
     return ultralightbeam.eth.getCode(loggingContract.address).should.eventually.amorphEqual(
-      loggingContract.runtimeBytecode, 'hex'
+      loggingContract.runcode, 'hex'
     )
   })
 

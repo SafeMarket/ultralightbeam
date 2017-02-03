@@ -147,7 +147,7 @@ describe('eth', () => {
     it('should not be empty for storageContract.address ', () => {
       return ultralightbeam
         .eth.getCode(storageContract.address)
-        .should.eventually.amorphEqual(storageContract.runtimeBytecode)
+        .should.eventually.amorphEqual(storageContract.runcode)
     })
   })
 
@@ -338,7 +338,7 @@ describe('eth', () => {
     })
 
     it('code should be correct', () => {
-      solidityOutput.code.should.amorphEqual(storageContract.bytecode)
+      solidityOutput.code.should.amorphEqual(storageContract.code)
     })
 
     it('abi should be correct', () => {

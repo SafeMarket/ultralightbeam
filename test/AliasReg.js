@@ -4,6 +4,8 @@ const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const persona = require('../modules/persona')
+const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const _ = require('lodash')
 
 require('./arrayValContract')
 
@@ -35,11 +37,7 @@ const AliasReg = {
         }`
 }
 
-const solcOutput = solc.compile(AliasReg.sol, 1).contracts.AliasReg
-
-AliasReg.abi = JSON.parse(solcOutput.interface)
-AliasReg.bytecode = new Amorph(solcOutput.bytecode, 'hex')
-AliasReg.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
+_.merge(AliasReg, amorphParseSolcOutput(solc.compile(AliasReg.sol, 1)).AliasReg)
 
 describe('AliasReg', () => {
 
@@ -47,7 +45,7 @@ describe('AliasReg', () => {
 
   it('should deploy', () => {
     const transactionRequest = new SolDeployTransactionRequest(
-      AliasReg.bytecode, AliasReg.abi, []
+      AliasReg.code, AliasReg.abi, []
     )
     return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       transactionReceipt
@@ -60,9 +58,9 @@ describe('AliasReg', () => {
     }).should.be.fulfilled
   })
 
-  it('should have correct runtimeBytecode', () => {
+  it('should have correct runcode', () => {
     ultralightbeam.eth.getCode(AliasReg.address).should.eventually.amorphEqual(
-      AliasReg.runtimeBytecode, 'hex'
+      AliasReg.runcode, 'hex'
     )
   })
 

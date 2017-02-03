@@ -26,8 +26,8 @@ describe('contracts', () => {
     _.forEach(solcOutput.contracts, (_contract, name) => {
       contracts[name] = {
         abi: JSON.parse(_contract.interface),
-        bytecode: new Amorph(_contract.bytecode, 'hex'),
-        runtimeBytecode: new Amorph(_contract.runtimeBytecode, 'hex')
+        code: new Amorph(_contract.code, 'hex'),
+        runcode: new Amorph(_contract.runcode, 'hex')
       }
     })
   })

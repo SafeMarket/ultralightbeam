@@ -80,7 +80,7 @@ describe('sendTransaction', () => {
   it('should deploy contract', () => {
 
     const transactionRequest = new TransactionRequest({
-      data: storageContract.bytecode,
+      data: storageContract.code,
       gas: new Amorph(3141592, 'number')
     })
 
@@ -94,7 +94,7 @@ describe('sendTransaction', () => {
 
   it('contract address code should be correct', () => {
     return ultralightbeam.eth.getCode(contractAddress1).should.eventually.amorphEqual(
-      storageContract.runtimeBytecode
+      storageContract.runcode
     )
   })
 

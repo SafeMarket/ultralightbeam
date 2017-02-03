@@ -5,6 +5,8 @@ const Amorph = require('../lib/Amorph')
 const stripType = require('../lib/stripType')
 const SolWrapper = require('../lib/SolWrapper')
 const persona = require('../modules/persona')
+const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const _ = require('lodash')
 
 const typesContract = {
   sol: `pragma solidity ^0.4.4;
@@ -25,11 +27,7 @@ const typesContract = {
           }
         }`
 }
-const solcOutput = solc.compile(typesContract.sol, 1).contracts.Types
-
-typesContract.abi = JSON.parse(solcOutput.interface)
-typesContract.bytecode = new Amorph(solcOutput.bytecode, 'hex')
-typesContract.runtimeBytecode = new Amorph(solcOutput.runtimeBytecode, 'hex')
+_.merge(typesContract, amorphParseSolcOutput(solc.compile(typesContract.sol, 1)).Types)
 
 describe('stripType', () => {
   it('should strip "bytes"', () => {
@@ -49,7 +47,7 @@ describe('stripType', () => {
 describe('typesContract', () => {
   it('should deploy', () => {
     const transactionRequest = new SolDeployTransactionRequest(
-      typesContract.bytecode, typesContract.abi, []
+      typesContract.code, typesContract.abi, []
     )
     return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
       transactionReceipt
@@ -63,7 +61,7 @@ describe('typesContract', () => {
 
   it('should have correct code', () => {
     return ultralightbeam.eth.getCode(typesContract.address).should.eventually.amorphEqual(
-      typesContract.runtimeBytecode, 'hex'
+      typesContract.runcode, 'hex'
     )
   })
 
