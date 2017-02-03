@@ -19,7 +19,7 @@ function Ultralightbeam(provider, _options) {
 
       const promises = []
 
-      if (ultralightbeam.gasPrice) {
+      if (this.gasPrice) {
         transactionRequest.set('gasPrice', ultralightbeam.gasPrice)
       }
 
