@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -t 10000 --require modules/chai.js"
+    "test": "mocha -t 10000 --require modules/chai.js --bail"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
     "amorph-parse-solc-output": "0.0.2",
     "babel-eslint": "^7.1.1",
     "chai": "^3.5.0",
+    "chai-amorph": "0.0.2",
     "chai-as-promised": "^6.0.0",
     "chai-web3-bindings": "^0.1.0",
     "eslint": "^3.11.1",

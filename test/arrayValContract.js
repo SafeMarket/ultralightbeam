@@ -6,6 +6,8 @@ const SolWrapper = require('../lib/SolWrapper')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
 const _ = require('lodash')
 
+require('./parseTransactionReceipt')
+
 const arrayValContract = {
   sol: `pragma solidity ^0.4.4;
         contract ArrayVal {
