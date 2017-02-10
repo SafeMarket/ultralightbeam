@@ -3,7 +3,7 @@ const bulk = require('bulk-require')
 const interfaces = bulk(__dirname + '/lib/interfaces/', '**/*.js')
 const Batch = require('./lib/Batch')
 const Protocol = require('./lib/Protocol')
-const debouncedExecute = require('./lib/debouncedExecute')
+const _execute = require('./lib/execute')
 const BlockPoller = require('./lib/BlockPoller')
 const Emitter = require('events')
 const _ = require('lodash')
@@ -14,6 +14,7 @@ function Ultralightbeam(provider, _options) {
   this.options =  {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
+    executionDebounce: 100,
     deduceOOGErrors: true,
     transactionHook: (transactionRequest) => {
 
@@ -58,13 +59,14 @@ function Ultralightbeam(provider, _options) {
   this.eth = new Protocol(this, interfaces.eth)
   this.miner = new Protocol(this, interfaces.miner)
   this.blockPoller = new BlockPoller(this)
+  this.debouncedExecute = _.debounce(_execute, this.options.executionDebounce)
 
   this.blockPoller.start(this.options.blockPollerInterval)
   this.emitter = new Emitter
 }
 
 Ultralightbeam.prototype.execute = function execute() {
-  return debouncedExecute(this)
+  return this.debouncedExecute(this)
 }
 
 Ultralightbeam.prototype.defer = function defer() {
