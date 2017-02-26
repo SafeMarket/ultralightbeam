@@ -7,8 +7,6 @@ const persona = require('../modules/persona')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
 const _ = require('lodash')
 
-require('./arrayValContract')
-
 const AliasReg = {
   sol: `pragma solidity ^0.4.4;
         contract AliasReg {
