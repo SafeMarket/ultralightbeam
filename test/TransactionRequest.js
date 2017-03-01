@@ -1,7 +1,7 @@
 const Amorph = require('../lib/Amorph')
 const TransactionRequest = require('../lib/TransactionRequest')
-const personas = require('../modules/personas')
-const personaValidator = require('../lib/validators/persona')
+const accounts = require('./accounts')
+const accountValidator = require('../lib/validators/account')
 const amorphAddressValidator = require('../lib/validators/amorphAddress')
 const transactionRequestFieldValidator = require(
   '../lib/validators/transactionRequestField'
@@ -24,8 +24,8 @@ describe('TransactionRequest', () => {
 
   it('should instantiate with complete arguments', () => {
     transactionRequest2 = new TransactionRequest({
-      from: personas[0],
-      to: personas[1].address,
+      from: accounts[0],
+      to: accounts[1].address,
       data: new Amorph('01', 'hex'),
       nonce: new Amorph('01', 'hex')
     })
@@ -45,7 +45,7 @@ describe('TransactionRequest', () => {
       new TransactionRequest({
         from: new Amorph('01', 'hex')
       })
-    }).should.throw(personaValidator.Error)
+    }).should.throw(accountValidator.Error)
   })
 
   it('should throw validation error with bad tp', () => {

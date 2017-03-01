@@ -3,13 +3,13 @@ const BlockPoller = require('../lib/BlockPoller')
 const Block = require('../lib/Block')
 const TransactionRequest = require('../lib/TransactionRequest')
 const ultralightbeam = require('./ultralightbeam')
-const personas = require('../modules/personas')
+const accounts = require('./accounts')
 
 describe('blockPoller', () => {
 
   const blocks = []
   const dummyTransaction = new TransactionRequest({
-    to: personas[0].address,
+    to: accounts[0].address,
     value: new Amorph(1, 'number')
   })
   let blockNumber

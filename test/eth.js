@@ -6,15 +6,14 @@ const web3Sha3 = require('web3/lib/utils/sha3')
 const TransactionRequest = require('../lib/TransactionRequest')
 const Transaction = require('../lib/Transaction')
 const TransactionReceipt = require('../lib/TransactionReceipt')
-const personas = require('../modules/personas')
+const accounts = require('./accounts')
+const account = require('./account')
 const Block = require('../lib/Block')
 const SolidityOutput = require('../lib/SolidityOutput')
-const persona = require('../modules/persona')
 const blockFlags = require('../lib/blockFlags')
 
 describe('eth', () => {
 
-  let accounts
   let blockNumber
   const balances = []
   let contractAddress1
@@ -22,49 +21,14 @@ describe('eth', () => {
   let blockByHash
   let blockByFlag
 
-  describe('getAccounts', () => {
-
-    it('should be fulfilled', () => {
-
-      return ultralightbeam
-        .eth.getAccounts()
-        .then((_accounts) => {
-          accounts = _accounts
-        })
-        .should.be.fulfilled
-
-    })
-
-    it('should be array of 10 Amorphs', () => {
-      accounts.should.be.instanceof(Array)
-      accounts.should.have.length(10)
-      accounts.forEach((account, index) => {
-        account.should.be.instanceof(Amorph)
-        account.to('hex.prefixed').should.be.an.address()
-        account.to('hex.prefixed').should.equal(
-          personas[index].address.to('hex.prefixed')
-        )
-      })
-    })
-
-  })
-
   describe('getBalance', () => {
 
     it('should be fulfilled', () => {
-
-      const promises = []
-
-      accounts.forEach((account) => {
-        const promise = ultralightbeam
-          .eth.getBalance(account).then((balance) => {
-            balances.push(balance)
-          })
-        promises.push(promise)
+      return Q.all(accounts.map((_account) => {
+        return ultralightbeam.eth.getBalance(_account.address)
+      })).then((_balances) => {
+        balances.push(..._balances)
       })
-
-      return Q.all(promises)
-
     })
 
     it('should be array of 10 Amorphs', () => {
@@ -73,11 +37,6 @@ describe('eth', () => {
       balances.forEach((balance, index) => {
         balance.should.be.instanceof(Amorph)
         balance.to('number').should.be.gt(0)
-        if (index > 1) {
-          balance.to('number').should.equal(
-            personas[index].balance.to('number')
-          )
-        }
       })
     })
 
@@ -98,7 +57,7 @@ describe('eth', () => {
     it('should get pos1[msg.sender] ', () => {
       const keyArray = []
         .concat(new Array(12).fill(0))
-        .concat(persona.address.to('array'))
+        .concat(account.address.to('array'))
         .concat(new Array(31).fill(0))
         .concat([1])
       const key = new Amorph(keyArray, 'array')
@@ -116,21 +75,21 @@ describe('eth', () => {
 
     it('account0 should be instanceof Amorph', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[0]
+          accounts[0].address
         )
         .should.eventually.be.instanceof(Amorph)
     })
 
     it('account0 should be greater than zero', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[0]
+          accounts[0].address
         )
         .should.eventually.amorphTo('number').be.greaterThan(0)
     })
 
     it('account1 should be zero', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[1]
+          accounts[1].address
         )
         .should.eventually.amorphTo('number').equal(0)
     })
@@ -140,7 +99,7 @@ describe('eth', () => {
   describe('getCode', () => {
     it('should be zeros for account0', () => {
       return ultralightbeam.eth.getCode(
-        accounts[0]
+        accounts[0].address
       ).should.eventually.amorphTo('number').equal(0)
     })
 
@@ -159,29 +118,6 @@ describe('eth', () => {
     })
   })
 
-  describe('sign', () => {
-
-    const dataArray = new Array(32).fill(1)
-    const data = new Amorph(dataArray, 'array')
-
-    let signedData
-
-    it('data should be fulfilled', () => {
-      return ultralightbeam.eth.sign(accounts[0], data).then((_signedData) => {
-        signedData = _signedData
-      }).should.be.fulfilled
-    })
-
-    it('should be 32 bytes long', () => {
-      signedData.to('array').should.have.length(65)
-    })
-
-    it('should NOT be zero', () => {
-      signedData.to('number').should.not.equal(0)
-    })
-
-  })
-
   describe('getGasPrice', () => {
 
     it('should be 2 Szabo', () => {
@@ -195,8 +131,8 @@ describe('eth', () => {
 
     it('should return 21000 for a simple transfer', () => {
       const transactionRequest = new TransactionRequest({
-        from: persona,
-        to: accounts[1],
+        from: account,
+        to: accounts[1].address,
         value: new Amorph(1, 'number')
       })
       return ultralightbeam.eth.estimateGas(

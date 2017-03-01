@@ -1,1 +1,1 @@
-require('./parseTransactionReceipt')
+require('./eth')

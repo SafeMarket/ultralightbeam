@@ -1,7 +1,7 @@
 const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
-const personas = require('../modules/personas')
-const persona = require('../modules/persona')
+const accounts = require('./accounts')
+const account = require('./account')
 const Q = require('q')
 const Amorph = require('../lib/Amorph')
 
@@ -10,17 +10,17 @@ const gasLimit = 4000000
 const provider = TestRPC.provider({
   gasLimit: gasLimit,
   blocktime: 2,
-  accounts: personas.map((_persona) => {
+  accounts: accounts.map((_account) => {
     return {
-      balance: _persona.balance.to('number'),
-      secretKey: _persona.privateKey.to('hex.prefixed')
+      balance: _account.balance.to('number'),
+      secretKey: _account.privateKey.to('hex.prefixed')
     }
   })
 })
 const ultralightbeam = new Ultralightbeam(provider, {
   transactionHook: (transactionRequest) => {
 
-    transactionRequest.set('from', persona)
+    transactionRequest.set('from', account)
 
     if (ultralightbeam.gasPrice) {
       transactionRequest.set('gasPrice', ultralightbeam.gasPrice)

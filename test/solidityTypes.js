@@ -4,7 +4,7 @@ const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const stripType = require('../lib/stripType')
 const SolWrapper = require('../lib/SolWrapper')
-const persona = require('../modules/persona')
+const account = require('./account')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
 const _ = require('lodash')
 
@@ -68,7 +68,7 @@ describe('typesContract', () => {
   describe('myAddress', () => {
     it('should be msg.sender', () => {
       typesContract.SolWrapper.fetch('myAddress()', []).should.eventually.amorphEqual(
-        persona.address, 'hex'
+        account.address, 'hex'
       )
     })
   })

@@ -1,6 +1,6 @@
 const ultralightbeam = require('./ultralightbeam')
 const TransactionRequest = require('../lib/TransactionRequest')
-const personas = require('../modules/personas')
+const accounts = require('./accounts')
 const Amorph = require('../lib/Amorph')
 
 describe('rejection', () => {
@@ -10,19 +10,19 @@ describe('rejection', () => {
   // it('should make 3 exeuctions', () => {
   //
   //   ultralightbeam.sendTransaction(new TransactionRequest({
-  //     from: personas[0],
-  //     to: personas[1].address
+  //     from: accounts[0],
+  //     to: accounts[1].address
   //   }))
   //
   //   ultralightbeam.sendTransaction(new TransactionRequest({
-  //     from: personas[0],
-  //     to: personas[1].address,
+  //     from: accounts[0],
+  //     to: accounts[1].address,
   //     gas: new Amorph(9999999999999999, 'number')
   //   }))
   //
   //   ultralightbeam.sendTransaction(new TransactionRequest({
-  //     from: personas[0],
-  //     to: personas[1].address
+  //     from: accounts[0],
+  //     to: accounts[1].address
   //   }))
   //
   //   batch = ultralightbeam.batch

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -t 10000 --require modules/chai.js --bail"
+    "test": "mocha -t 10000 --require test/chai.js --bail"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,7 @@
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^1.0.2",
     "bulk-require": "^1.0.0",
+    "ethereum-account-amorph": "0.0.1",
     "ethereumjs-tx": "^1.1.4",
     "is-pojo": "^1.0.2",
     "lodash": "^4.17.2",

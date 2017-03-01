@@ -3,7 +3,7 @@ const SolWrapper = require('../lib/SolWrapper')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
-const persona = require('../modules/persona')
+const account = require('./account')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
 const _ = require('lodash')
 
@@ -89,13 +89,13 @@ describe('AliasReg', () => {
     return AliasReg.SolWrapper.fetch(
         'getAddr(bytes32)',
         [myAlias]
-      ).should.eventually.amorphEqual(persona.address, 'hex')
+      ).should.eventually.amorphEqual(account.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
     return AliasReg.SolWrapper.fetch(
         'getAlias(address)',
-        [persona.address]
+        [account.address]
       ).should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))
   })
 
