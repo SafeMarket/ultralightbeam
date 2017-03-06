@@ -37,7 +37,7 @@
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^1.0.2",
     "bulk-require": "^1.0.0",
-    "ethereum-account-amorph": "0.0.1",
+    "ethereum-account-amorph": "^0.0.1",
     "ethereumjs-tx": "^1.1.4",
     "is-pojo": "^1.0.2",
     "lodash": "^4.17.2",
