@@ -45,12 +45,12 @@ describe('AliasReg', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       AliasReg.code, AliasReg.abi, []
     )
-    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
-      transactionReceipt
+    return ultralightbeam.sendTransaction(transactionRequest).getContractAddress().then((
+      contractAddress
     ) => {
-      AliasReg.address = transactionReceipt.contractAddress
+      AliasReg.address = contractAddress
       AliasReg.SolWrapper = new SolWrapper(
-        ultralightbeam, AliasReg.abi, AliasReg.address
+        ultralightbeam, AliasReg.abi, contractAddress
       )
 
     }).should.be.fulfilled

@@ -44,12 +44,12 @@ describe('arrayValContract', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       arrayValContract.code, arrayValContract.abi, []
     )
-    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
-      transactionReceipt
+    return ultralightbeam.sendTransaction(transactionRequest).getContractAddress().then((
+      contractAddress
     ) => {
-      arrayValContract.address = transactionReceipt.contractAddress
+      arrayValContract.address = contractAddress
       arrayValContract.SolWrapper = new SolWrapper(
-        ultralightbeam, arrayValContract.abi, arrayValContract.address
+        ultralightbeam, arrayValContract.abi, contractAddress
       )
     })
   })

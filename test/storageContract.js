@@ -26,12 +26,12 @@ describe('storageContract', () => {
     const transactionRequest = new SolDeployTransactionRequest(
       storageContract.code, storageContract.abi, [], { value: new Amorph(1, 'number') }
     )
-    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
-      transactionReceipt
+    return ultralightbeam.sendTransaction(transactionRequest).getContractAddress().then((
+      contractAddress
     ) => {
-      storageContract.address = transactionReceipt.contractAddress
+      storageContract.address = contractAddress
       storageContract.SolWrapper = new SolWrapper(
-        ultralightbeam, storageContract.abi, storageContract.address
+        ultralightbeam, storageContract.abi, contractAddress
       )
     }).should.be.fulfilled
   })
