@@ -1,50 +1,45 @@
 const ultralightbeam = require('./ultralightbeam')
-const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
-const solc = require('solc')
 const Amorph = require('../lib/Amorph')
-const SolWrapper = require('../lib/SolWrapper')
-const amorphParseSolcOutput = require('amorph-parse-solc-output')
-const _ = require('lodash')
+const Q = require('q')
+const storageContractInfo = require('./storageContractInfo')
+const accounts = require('./accounts')
 
-const storageContract = {
-  sol: `pragma solidity ^0.4.4;
-        contract Storage {
-          uint public pos0;
-          mapping(address => uint) pos1;
-
-          function Storage() payable {
-              pos0 = 1234;
-              pos1[msg.sender] = 5678;
-          }
-        }`
-}
-
-_.merge(storageContract, amorphParseSolcOutput(solc.compile(storageContract.sol, 1)).Storage)
+const deferred = Q.defer()
+module.exports = deferred.promise
 
 describe('storageContract', () => {
+  let storageContract
+
+  after(() => {
+    deferred.resolve(storageContract)
+  })
+
   it('should deploy', () => {
-    const transactionRequest = new SolDeployTransactionRequest(
-      storageContract.code, storageContract.abi, [], { value: new Amorph(1, 'number') }
-    )
-    return ultralightbeam.sendTransaction(transactionRequest).getContractAddress().then((
-      contractAddress
-    ) => {
-      storageContract.address = contractAddress
-      storageContract.SolWrapper = new SolWrapper(
-        ultralightbeam, storageContract.abi, contractAddress
-      )
+    return ultralightbeam.solDeploy(
+      storageContractInfo.code,
+      storageContractInfo.abi,
+      [],
+      { value: new Amorph(1, 'number') }
+    ).then((_storageContract) => {
+      storageContract = _storageContract
     }).should.be.fulfilled
   })
 
   it('should have correct code', () => {
     return ultralightbeam.eth.getCode(storageContract.address).should.eventually.amorphEqual(
-      storageContract.runcode, 'hex'
+      storageContractInfo.runcode, 'hex'
     )
   })
 
-  it('should have correct value', () => {
+  it('should have correct balance', () => {
     return ultralightbeam.eth.getBalance(storageContract.address).should.eventually.amorphTo('number').equal(1)
   })
-})
 
-module.exports = storageContract
+  it('should have correct pos0', () => {
+    return storageContract.fetch('pos0()', []).should.eventually.amorphTo('number').equal(1234)
+  })
+
+  it('should have correct pos1[msg.sender]', () => {
+    return storageContract.fetch('pos1(address)', [accounts[0].address]).should.eventually.amorphTo('number').equal(5678)
+  })
+})

@@ -8,52 +8,52 @@ const accounts = require('./accounts')
 const Amorph = require('../lib/Amorph')
 const crypto = require('crypto')
 
-const eventsContract = {
-  sol: `pragma solidity ^0.4.4;
-        contract Events {
-          event Creation(uint256 blockNumber, uint256 timestamp);
+const eventsContractSol =
+  `pragma solidity ^0.4.4;
+  contract Events {
+    event Creation(uint256 blockNumber, uint256 timestamp);
 
-          event A(address sender, uint256 a);
-          event B(uint256 b, address sender);
-          event C(bytes5 tag, bytes32 hash);
+    event A(address sender, uint256 a);
+    event B(uint256 b, address sender);
+    event C(bytes5 tag, bytes32 hash);
 
-          function Events() payable {
-            Creation(block.number, now);
-          }
+    function Events() payable {
+      Creation(block.number, now);
+    }
 
-          function doThing(uint256 a, uint256 b) {
-            A(msg.sender, a);
-            B(b, msg.sender);
-          }
+    function doThing(uint256 a, uint256 b) {
+      A(msg.sender, a);
+      B(b, msg.sender);
+    }
 
-          function tag(bytes5 tag, bytes32 hash) {
-            C(tag, hash);
-          }
-        }`
-}
+    function tag(bytes5 tag, bytes32 hash) {
+      C(tag, hash);
+    }
+  }`
 
-_.merge(eventsContract, amorphParseSolcOutput(solc.compile(eventsContract.sol, 1)).Events)
+const eventsContractInfo = amorphParseSolcOutput(solc.compile(eventsContractSol, 1)).Events
 
 function random(length) {
   return new Amorph(crypto.randomBytes(length), 'buffer')
 }
 
 describe('eventsContract', () => {
-
+  let eventsContract
   describe('deploy', () => {
     let eventLogs
     it('should be fulfilled', () => {
       const transactionRequest = new SolDeployTransactionRequest(
-        eventsContract.code, eventsContract.abi, []
+        ultralightbeam, eventsContractInfo.code, eventsContractInfo.abi, []
       )
-      return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
+      const transactionMonitor = transactionRequest.send()
+
+      return transactionMonitor.getTransactionReceipt().then((
         transactionReceipt
       ) => {
-        eventsContract.address = transactionReceipt.contractAddress
-        eventsContract.SolWrapper = new SolWrapper(
-          ultralightbeam, eventsContract.abi, eventsContract.address
+        eventsContract = new SolWrapper(
+          ultralightbeam, eventsContractInfo.abi, transactionReceipt.contractAddress
         )
-        eventLogs = eventsContract.SolWrapper.parseTransactionReceipt(transactionReceipt)
+        eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
       }).should.be.fulfilled
     })
 
@@ -74,10 +74,10 @@ describe('eventsContract', () => {
     it('should emit correct events', () => {
       const one = new Amorph(1, 'number')
       const two = new Amorph(2, 'number')
-      return eventsContract.SolWrapper.broadcast('doThing(uint256,uint256)', [
+      return eventsContract.broadcast('doThing(uint256,uint256)', [
         one, two
       ]).getTransactionReceipt().then((transactionReceipt) => {
-        const eventLogs = eventsContract.SolWrapper.parseTransactionReceipt(transactionReceipt)
+        const eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
         eventLogs.should.have.length(2)
         eventLogs[0].values.should.have.length(2)
         eventLogs[0].values[0].should.amorphEqual(accounts[0].address, 'hex')
@@ -99,10 +99,10 @@ describe('eventsContract', () => {
     it('should emit correct events', () => {
       const tag = random(5)
       const hash = random(32)
-      return eventsContract.SolWrapper.broadcast('tag(bytes5,bytes32)', [
+      return eventsContract.broadcast('tag(bytes5,bytes32)', [
         tag, hash
       ]).getTransactionReceipt().then((transactionReceipt) => {
-        const eventLogs = eventsContract.SolWrapper.parseTransactionReceipt(transactionReceipt)
+        const eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
         eventLogs.should.have.length(1)
 
         eventLogs[0].topics.should.have.keys(['tag', 'hash'])
@@ -113,5 +113,3 @@ describe('eventsContract', () => {
   })
 
 })
-
-module.exports = eventsContract

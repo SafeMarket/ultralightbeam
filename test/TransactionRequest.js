@@ -7,7 +7,6 @@ const transactionRequestFieldValidator = require(
   '../lib/validators/transactionRequestField'
 )
 const ultralightbeam = require('./ultralightbeam')
-const _ = require('lodash')
 
 describe('TransactionRequest', () => {
 
@@ -23,7 +22,7 @@ describe('TransactionRequest', () => {
   })
 
   it('should instantiate with complete arguments', () => {
-    transactionRequest2 = new TransactionRequest({
+    transactionRequest2 = new TransactionRequest(null, {
       from: accounts[0],
       to: accounts[1].address,
       data: new Amorph('01', 'hex'),
@@ -42,16 +41,16 @@ describe('TransactionRequest', () => {
   it('should throw validation error with bad from', () => {
     (() => {
       // eslint-disable-next-line no-new
-      new TransactionRequest({
+      new TransactionRequest(ultralightbeam, {
         from: new Amorph('01', 'hex')
-      })
+      }).send()
     }).should.throw(accountValidator.Error)
   })
 
   it('should throw validation error with bad tp', () => {
     (() => {
       // eslint-disable-next-line no-new
-      new TransactionRequest({
+      new TransactionRequest(null, {
         to: new Amorph('01', 'hex')
       })
     }).should.throw(amorphAddressValidator.Error)
@@ -60,7 +59,7 @@ describe('TransactionRequest', () => {
   it('should throw validation error with bogus field', () => {
     (() => {
       // eslint-disable-next-line no-new
-      new TransactionRequest({
+      new TransactionRequest(null, {
         bogus: new Amorph('01', 'hex')
       })
     }).should.throw(transactionRequestFieldValidator.Error)

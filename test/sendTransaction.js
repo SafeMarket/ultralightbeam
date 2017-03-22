@@ -1,5 +1,6 @@
 const ultralightbeam = require('./ultralightbeam')
 const TransactionRequest = require('../lib/TransactionRequest')
+const storageContractInfo = require('./storageContractInfo')
 const storageContract = require('./storageContract')
 const accounts = require('./accounts')
 const Amorph = require('Amorph')
@@ -34,11 +35,11 @@ describe('sendTransaction', () => {
   let transactionHash
 
   it('should send 1 wei from account0 to account1', () => {
-    transactionMonitor = ultralightbeam.sendTransaction(new TransactionRequest({
+    transactionMonitor = new TransactionRequest(ultralightbeam, {
       from: accounts[0],
       to: accounts[1].address,
       value: new Amorph(1, 'number')
-    }))
+    }).send()
   })
 
   it('transactionMonitor should be instance of TransactionMonitor', () => {
@@ -79,12 +80,12 @@ describe('sendTransaction', () => {
 
   it('should deploy contract', () => {
 
-    const transactionRequest = new TransactionRequest({
-      data: storageContract.code,
+    const transactionRequest = new TransactionRequest(ultralightbeam, {
+      data: storageContractInfo.code,
       gas: new Amorph(3141592, 'number')
     })
 
-    return ultralightbeam.sendTransaction(transactionRequest).getTransactionReceipt().then((
+    return transactionRequest.send().getTransactionReceipt().then((
       transactionReceipt
     ) => {
       contractAddress1 = transactionReceipt.contractAddress
@@ -94,7 +95,7 @@ describe('sendTransaction', () => {
 
   it('contract address code should be correct', () => {
     return ultralightbeam.eth.getCode(contractAddress1).should.eventually.amorphEqual(
-      storageContract.runcode
+      storageContractInfo.runcode
     )
   })
 

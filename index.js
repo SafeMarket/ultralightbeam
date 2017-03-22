@@ -8,6 +8,9 @@ const BlockPoller = require('./lib/BlockPoller')
 const Emitter = require('events')
 const _ = require('lodash')
 const TransactionMonitor = require('./lib/TransactionMonitor')
+const TransactionRequest = require('./lib/TransactionRequest')
+const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
+const SolWrapper = require('./lib/SolWrapper')
 
 function Ultralightbeam(provider, _options) {
 
@@ -81,7 +84,7 @@ Ultralightbeam.prototype.resolve = function resolve(reason) {
   return Q.resolve(reason)
 }
 
-Ultralightbeam.prototype.sendTransaction = function sendTransaction(
+Ultralightbeam.prototype.send = function send(
   transactionRequest, _transactionHook, _maxBlocksToWait
 ) {
   const transactionHook = _transactionHook || this.options.transactionHook
@@ -92,6 +95,20 @@ Ultralightbeam.prototype.sendTransaction = function sendTransaction(
     transactionHook,
     maxBlocksToWait
   )
+}
+
+Ultralightbeam.prototype.solDeploy = function solDeploy(bytecode, abi, inputs, options) {
+  return new SolDeployTransactionRequest(this, bytecode, abi, inputs, options).send().getContractAddress().then((contractAddress) => {
+    return new SolWrapper(this, abi, contractAddress)
+  })
+}
+
+Ultralightbeam.getTransactionRequest = function getTransactionRequest(options) {
+  return new TransactionRequest(this, options)
+}
+
+Ultralightbeam.prototype.getSolWrapper = function getSolWrapper(bytecode, abi, inputs, options) {
+  return new SolDeploy(this, bytecode, abi, inputs, options)
 }
 
 module.exports = Ultralightbeam

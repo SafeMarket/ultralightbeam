@@ -1,1 +1,1 @@
-require('./eth')
+// require('./loggingContract')

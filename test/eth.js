@@ -1,7 +1,9 @@
 const Amorph = require('../lib/Amorph')
 const Q = require('q')
 const ultralightbeam = require('./ultralightbeam')
-const storageContract = require('./storageContract')
+const storageContractSol = require('./storageContractSol')
+const storageContractInfo = require('./storageContractInfo')
+const storageContractPromise = require('./storageContract')
 const web3Sha3 = require('web3/lib/utils/sha3')
 const TransactionRequest = require('../lib/TransactionRequest')
 const Transaction = require('../lib/Transaction')
@@ -43,6 +45,13 @@ describe('eth', () => {
   })
 
   describe('getStorageAt', () => {
+
+    let storageContract
+    before(() => {
+      return storageContractPromise.then((_storageContract) => {
+        storageContract = _storageContract
+      })
+    })
 
     it('should get pos0 ', () => {
       const positionArray = new Array(32).fill(0)
@@ -97,6 +106,14 @@ describe('eth', () => {
   })
 
   describe('getCode', () => {
+
+    let storageContract
+    before(() => {
+      return storageContractPromise.then((_storageContract) => {
+        storageContract = _storageContract
+      })
+    })
+
     it('should be zeros for account0', () => {
       return ultralightbeam.eth.getCode(
         accounts[0].address
@@ -106,7 +123,7 @@ describe('eth', () => {
     it('should not be empty for storageContract.address ', () => {
       return ultralightbeam
         .eth.getCode(storageContract.address)
-        .should.eventually.amorphEqual(storageContract.runcode)
+        .should.eventually.amorphEqual(storageContractInfo.runcode)
     })
   })
 
@@ -130,7 +147,7 @@ describe('eth', () => {
   describe('estimateGas', () => {
 
     it('should return 21000 for a simple transfer', () => {
-      const transactionRequest = new TransactionRequest({
+      const transactionRequest = new TransactionRequest(ultralightbeam, {
         from: account,
         to: accounts[1].address,
         value: new Amorph(1, 'number')
@@ -260,10 +277,17 @@ describe('eth', () => {
   describe('compileSolidity', () => {
 
     let solidityOutput
+    let storageContract
+
+    before(() => {
+      return storageContractPromise.then((_storageContract) => {
+        storageContract = _storageContract
+      })
+    })
 
     it('should compile storageContract', () => {
       return ultralightbeam.eth.compileSolidity(
-        storageContract.sol
+        storageContractSol
       ).then((_solidityOutput) => {
         solidityOutput = _solidityOutput
       }).should.be.fulfilled
@@ -274,11 +298,11 @@ describe('eth', () => {
     })
 
     it('code should be correct', () => {
-      solidityOutput.code.should.amorphEqual(storageContract.code)
+      solidityOutput.code.should.amorphEqual(storageContractInfo.code)
     })
 
     it('abi should be correct', () => {
-      solidityOutput.info.abiDefinition.should.deep.equal(storageContract.abi)
+      solidityOutput.info.abiDefinition.should.deep.equal(storageContractInfo.abi)
     })
 
   })

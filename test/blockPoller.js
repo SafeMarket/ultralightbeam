@@ -8,7 +8,7 @@ const accounts = require('./accounts')
 describe('blockPoller', () => {
 
   const blocks = []
-  const dummyTransaction = new TransactionRequest({
+  const dummyTransaction = new TransactionRequest(ultralightbeam, {
     to: accounts[0].address,
     value: new Amorph(1, 'number')
   })
@@ -35,7 +35,7 @@ describe('blockPoller', () => {
     ultralightbeam.blockPoller.blockPromise.then((_block) => {
       block = _block
     })
-    return ultralightbeam.sendTransaction(dummyTransaction).transactionPromise
+    return dummyTransaction.send().getTransaction()
   })
 
 
@@ -52,7 +52,7 @@ describe('blockPoller', () => {
   })
 
   it('should send another dummy Transaction', () => {
-    ultralightbeam.sendTransaction(dummyTransaction)
+    dummyTransaction.send()
     return ultralightbeam.blockPoller.blockPromise.should.be.fulfilled
   })
 
