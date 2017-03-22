@@ -11,6 +11,7 @@ const TransactionMonitor = require('./lib/TransactionMonitor')
 const TransactionRequest = require('./lib/TransactionRequest')
 const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
 const SolWrapper = require('./lib/SolWrapper')
+const errors = require('./lib/errors')
 
 function Ultralightbeam(provider, _options) {
 
@@ -19,34 +20,87 @@ function Ultralightbeam(provider, _options) {
     maxBlocksToWait: 3,
     executionDebounce: 100,
     deduceOOGErrors: true,
+    gasMultiplier: 1.2,
     transactionHook: (transactionRequest) => {
+
+      const from = transactionRequest.values.from || this.options.defaultAccount
+
+      if (!from) {
+        throw new errors.NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
+      }
+
+      if (!transactionRequest.values.from) {
+        transactionRequest.set('from', from)
+      }
+
+      let noncePromise
+      let gasPricePromise
+      let gasPromise
+      let gasLimitPromise
 
       const promises = []
 
-      if (this.gasPrice) {
-        transactionRequest.set('gasPrice', ultralightbeam.gasPrice)
+      if (transactionRequest.values.nonce) {
+        noncePromise = Q.resolve(transactionRequest.values.nonce)
+      } else {
+        noncePromise = ultralightbeam.eth.getTransactionCount(transactionRequest.values.from.address)
       }
 
-      if (!transactionRequest.values.gas) {
-        const gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
-          transactionRequest.set('gas', gas)
+      if (transactionRequest.values.gasPrice) {
+        gasPricePromise = Q.resolve(transactionRequest.values.gasPrice)
+      } else {
+        if (ultralightbeam.blockPoller.gasPrice) {
+          gasPricePromise = Q.resolve(ultralightbeam.blockPoller.gasPrice)
+        } else {
+          gasPricePromise = ultralightbeam.blockPoller.gasPricePromise
+        }
+      }
+
+      if (transactionRequest.values.gas) {
+        gasPromise = Q.resolve(transactionRequest.values.gas)
+      } else {
+        gasPromise = ultralightbeam.eth.estimateGas(transactionRequest).then((gas) => {
+          return gas.as('bignumber', (bignumber) => {
+            return bignumber.times(this.options.gasMultiplier).floor()
+          })
         })
-
-        promises.push(gasPromise)
       }
 
-      if (transactionRequest.values.from && !transactionRequest.values.nonce) {
-        const noncePromise =  this.eth.getTransactionCount(
-          transactionRequest.values.from.address
-        ).then((
-          transactionCount
-        ) => {
-          transactionRequest.set('nonce', transactionCount)
+      if (ultralightbeam.blockPoller.block) {
+        gasLimitPromise = Q.resolve(ultralightbeam.blockPoller.block.gasLimit)
+      } else {
+        gasLimitPromise = ultralightbeam.blockPoller.blockPromise.then((block) => {
+          return block.gasLimit
         })
-        promises.push(noncePromise)
       }
 
-      return Q.all(promises).then(() => {
+      return Q.all([
+        noncePromise,
+        gasPromise,
+        gasPricePromise,
+        gasLimitPromise,
+        ultralightbeam.eth.getBalance(from)
+      ]).then((results) => {
+        const nonce = results[0]
+        const gas = results[1]
+        const gasPrice = results[2]
+        const gasLimit = results[3]
+        const balance = results[4]
+
+        if (gas.to('bignumber').gt(gasLimit)) {
+          throw new errors.ExceedsBlockLimitError(`Gas (${gas.to('number')}) exceeds block gas limit (${gasLimit})`)
+        }
+        const gasCost = gas.as('bignumber', (bignumber) => {
+          return bignumber.times(gasPrice.to('bignumber'))
+        })
+        if (gasCost.to('bignumber').gt(balance.to('bignumber'))) {
+          throw new errors.BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${account.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
+        }
+
+        transactionRequest.set('nonce', nonce)
+        transactionRequest.set('gas', gas)
+        transactionRequest.set('gasPrice', gasPrice)
+
         return transactionRequest
       })
     }

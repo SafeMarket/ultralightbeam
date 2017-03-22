@@ -1,1 +1,1 @@
-// require('./loggingContract')
+require('./oog')
