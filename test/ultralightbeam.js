@@ -18,43 +18,7 @@ const provider = TestRPC.provider({
   })
 })
 const ultralightbeam = new Ultralightbeam(provider, {
-  transactionHook: (transactionRequest) => {
-
-    transactionRequest.set('from', account)
-
-    if (ultralightbeam.gasPrice) {
-      transactionRequest.set('gasPrice', ultralightbeam.gasPrice)
-    }
-
-    const promises = []
-
-    if (!transactionRequest.values.gas) {
-      const gasPromise = ultralightbeam.eth.estimateGas(transactionRequest).then((gas) => {
-        if(gas.to('bignumber').gt(gasLimit)) {
-          transactionRequest.set('gas', new Amorph(gasLimit, 'number'))
-        } else {
-          transactionRequest.set('gas', gas)
-        }
-      })
-
-      promises.push(gasPromise)
-    }
-
-    if (transactionRequest.values.from && !transactionRequest.values.nonce) {
-      const noncePromise =  ultralightbeam.eth.getTransactionCount(
-        transactionRequest.values.from.address
-      ).then((
-        transactionCount
-      ) => {
-        transactionRequest.set('nonce', transactionCount)
-      })
-      promises.push(noncePromise)
-    }
-
-    return Q.all(promises).then(() => {
-      return transactionRequest
-    })
-  }
+  defaultAccount: account
 })
 
 module.exports = ultralightbeam

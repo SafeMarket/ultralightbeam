@@ -43,33 +43,33 @@ function Ultralightbeam(provider, _options) {
       if (transactionRequest.values.nonce) {
         noncePromise = Q.resolve(transactionRequest.values.nonce)
       } else {
-        noncePromise = ultralightbeam.eth.getTransactionCount(transactionRequest.values.from.address)
+        noncePromise = this.eth.getTransactionCount(transactionRequest.values.from.address)
       }
 
       if (transactionRequest.values.gasPrice) {
         gasPricePromise = Q.resolve(transactionRequest.values.gasPrice)
       } else {
-        if (ultralightbeam.blockPoller.gasPrice) {
-          gasPricePromise = Q.resolve(ultralightbeam.blockPoller.gasPrice)
+        if (this.blockPoller.gasPrice) {
+          gasPricePromise = Q.resolve(this.blockPoller.gasPrice)
         } else {
-          gasPricePromise = ultralightbeam.blockPoller.gasPricePromise
+          gasPricePromise = this.blockPoller.gasPricePromise
         }
       }
 
       if (transactionRequest.values.gas) {
         gasPromise = Q.resolve(transactionRequest.values.gas)
       } else {
-        gasPromise = ultralightbeam.eth.estimateGas(transactionRequest).then((gas) => {
+        gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
           return gas.as('bignumber', (bignumber) => {
             return bignumber.times(this.options.gasMultiplier).floor()
           })
         })
       }
 
-      if (ultralightbeam.blockPoller.block) {
-        gasLimitPromise = Q.resolve(ultralightbeam.blockPoller.block.gasLimit)
+      if (this.blockPoller.block) {
+        gasLimitPromise = Q.resolve(this.blockPoller.block.gasLimit)
       } else {
-        gasLimitPromise = ultralightbeam.blockPoller.blockPromise.then((block) => {
+        gasLimitPromise = this.blockPoller.blockPromise.then((block) => {
           return block.gasLimit
         })
       }
@@ -79,7 +79,7 @@ function Ultralightbeam(provider, _options) {
         gasPromise,
         gasPricePromise,
         gasLimitPromise,
-        ultralightbeam.eth.getBalance(from)
+        this.eth.getBalance(from.address)
       ]).then((results) => {
         const nonce = results[0]
         const gas = results[1]
@@ -87,7 +87,7 @@ function Ultralightbeam(provider, _options) {
         const gasLimit = results[3]
         const balance = results[4]
 
-        if (gas.to('bignumber').gt(gasLimit)) {
+        if (gas.to('bignumber').gt(gasLimit.to('bignumber'))) {
           throw new errors.ExceedsBlockLimitError(`Gas (${gas.to('number')}) exceeds block gas limit (${gasLimit})`)
         }
         const gasCost = gas.as('bignumber', (bignumber) => {
