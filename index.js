@@ -94,7 +94,7 @@ function Ultralightbeam(provider, _options) {
           return bignumber.times(gasPrice.to('bignumber'))
         })
         if (gasCost.to('bignumber').gt(balance.to('bignumber'))) {
-          throw new errors.BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${account.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
+          throw new errors.BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${from.address.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
         }
 
         transactionRequest.set('nonce', nonce)
