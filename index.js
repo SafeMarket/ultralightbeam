@@ -21,6 +21,9 @@ function Ultralightbeam(provider, _options) {
     executionDebounce: 100,
     deduceOOGErrors: true,
     gasMultiplier: 1.2,
+    gasCostHook: (gasCost) => {
+      return Q.resolve()
+    },
     transactionHook: (transactionRequest) => {
 
       if (!transactionRequest.values.from) {
@@ -87,15 +90,17 @@ function Ultralightbeam(provider, _options) {
         const gasCost = gas.as('bignumber', (bignumber) => {
           return bignumber.times(gasPrice.to('bignumber'))
         })
+
         if (gasCost.to('bignumber').gt(balance.to('bignumber'))) {
           throw new errors.BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${from.address.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
         }
 
-        transactionRequest.set('nonce', nonce)
-        transactionRequest.set('gas', gas)
-        transactionRequest.set('gasPrice', gasPrice)
-
-        return transactionRequest
+        return this.options.gasCostHook(gasCost).then(() => {
+          transactionRequest.set('nonce', nonce)
+          transactionRequest.set('gas', gas)
+          transactionRequest.set('gasPrice', gasPrice)
+          return transactionRequest
+        })
       })
     }
   }
