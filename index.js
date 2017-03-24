@@ -23,14 +23,8 @@ function Ultralightbeam(provider, _options) {
     gasMultiplier: 1.2,
     transactionHook: (transactionRequest) => {
 
-      const from = transactionRequest.values.from || this.options.defaultAccount
-
-      if (!from) {
-        throw new errors.NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
-      }
-
       if (!transactionRequest.values.from) {
-        transactionRequest.set('from', from)
+        throw new errors.NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
       }
 
       let noncePromise
@@ -79,7 +73,7 @@ function Ultralightbeam(provider, _options) {
         gasPromise,
         gasPricePromise,
         gasLimitPromise,
-        this.eth.getBalance(from.address)
+        this.eth.getBalance(transactionRequest.values.from.address)
       ]).then((results) => {
         const nonce = results[0]
         const gas = results[1]
