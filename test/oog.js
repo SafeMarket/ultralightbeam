@@ -28,13 +28,13 @@ describe('oogContract', () => {
   let oogContract
 
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(oogContractInfo.code, oogContractInfo.abi, []).then((_oogContract) => {
+    return ultralightbeam.solDeploy(oogContractInfo.code, oogContractInfo.abi, [], {}).then((_oogContract) => {
       oogContract = _oogContract
     })
   })
 
   it('doThing() should be fulfilled', () => {
-    return oogContract.broadcast('doThing()').getTransactionReceipt().then((transactionReceipt) => {
+    return oogContract.broadcast('doThing()', [], {}).getTransactionReceipt().then((transactionReceipt) => {
       gas = transactionReceipt.gasUsed
     })
   })

@@ -19,7 +19,7 @@ describe('loggingContract', () => {
   let loggingContract
 
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(loggingContractInfo.code, loggingContractInfo.abi, []).then((_loggingContract) => {
+    return ultralightbeam.solDeploy(loggingContractInfo.code, loggingContractInfo.abi, [], {}).then((_loggingContract) => {
       loggingContract = _loggingContract
     })
   })
@@ -31,7 +31,7 @@ describe('loggingContract', () => {
   })
 
   it('should call hello', () => {
-    return loggingContract.broadcast('hello()', []).getTransactionReceipt().then((
+    return loggingContract.broadcast('hello()', [], {}).getTransactionReceipt().then((
       _transactionReceipt
     ) => {
       transactionReceipt = _transactionReceipt

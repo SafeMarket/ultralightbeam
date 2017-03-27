@@ -45,7 +45,7 @@ describe('stripType', () => {
 describe('typesContract', () => {
   let typesContract
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(typesContractInfo.code, typesContractInfo.abi, []).then((_typesContract) => {
+    return ultralightbeam.solDeploy(typesContractInfo.code, typesContractInfo.abi, [], {}).then((_typesContract) => {
       typesContract = _typesContract
     }).should.be.fulfilled
   })

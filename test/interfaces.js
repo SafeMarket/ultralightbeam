@@ -2,7 +2,6 @@ const bulk = require('bulk-require')
 const interfacesByProtocol = bulk(__dirname + '/../lib/interfaces/', [ '**/*.js' ])
 const Interface = require('../lib/Interface')
 const _ = require('lodash')
-const Validator = require('../lib/Validator')
 
 describe('interfaces', () => {
 
@@ -18,20 +17,13 @@ describe('interfaces', () => {
           _interface.should.be.instanceof(Interface)
         })
 
-        it('inputterValidators should be instance of array', () => {
-          _interface.inputterValidators.should.be.instanceof(Array)
+        it('inputDescriptions should be instance of array', () => {
+          _interface.inputDescriptions.should.be.instanceof(Array)
         })
 
-        it('inputterValidators should have same length as inputter', () => {
-          const argumentsLength = _interface.inputter ?
-            _interface.inputter.length : 0
-          _interface.inputterValidators.length.should.equal(argumentsLength)
-        })
-
-        _interface.inputterValidators.forEach((validator, index) => {
-          it(`inputterValidator #${index} (${_interface.name}) should be instance of Validator`, () => {
-            validator.should.be.instanceof(Validator)
-          })
+        it('inputDescriptions should have same length as inputter', () => {
+          const argumentsLength = _interface.inputter ? _interface.inputter.length : 0
+          _interface.inputDescriptions.should.have.length(argumentsLength)
         })
 
       })

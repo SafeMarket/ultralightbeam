@@ -39,7 +39,7 @@ describe('aliasReg', () => {
   let aliasReg
 
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(aliasRegInfo.code, aliasRegInfo.abi, []).then((_aliasReg) => {
+    return ultralightbeam.solDeploy(aliasRegInfo.code, aliasRegInfo.abi, [], {}).then((_aliasReg) => {
       aliasReg = _aliasReg
     })
   })
@@ -52,37 +52,32 @@ describe('aliasReg', () => {
 
   it('myAlias should be an address', () => {
     return aliasReg.fetch(
-      'getAddr(bytes32)',
-      [myAlias]
+      'getAddr(bytes32)', [myAlias]
     ).should.eventually.amorphTo('hex.prefixed').be.address()
   })
 
   it('myAlias should be zero', () => {
     return aliasReg.fetch(
-      'getAddr(bytes32)',
-      [myAlias]
+      'getAddr(bytes32)', [myAlias]
     )
     .should.eventually.amorphTo('number').equal(0)
   })
 
   it('myAlias claim myAlias', () => {
     return aliasReg.broadcast(
-      'claimAlias(bytes32)',
-      [myAlias]
+      'claimAlias(bytes32)', [myAlias], {}
     ).transactionPromise.should.eventually.be.fulfilled
   })
 
   it('getAddr(myAlias) should return account0', () => {
     return aliasReg.fetch(
-      'getAddr(bytes32)',
-      [myAlias]
+      'getAddr(bytes32)', [myAlias]
     ).should.eventually.amorphEqual(account.address, 'hex')
   })
 
   it('getAlias(account0) should return myAlias', () => {
     return aliasReg.fetch(
-      'getAlias(address)',
-      [account.address]
+      'getAlias(address)', [account.address]
     ).should.eventually.amorphTo('hex.prefixed').be.ascii(myAlias.to('ascii'))
   })
 

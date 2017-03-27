@@ -12,8 +12,11 @@ const TransactionRequest = require('./lib/TransactionRequest')
 const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
 const SolWrapper = require('./lib/SolWrapper')
 const errors = require('./lib/errors')
+const arguguard = require('arguguard')
+const Amorph = require('./lib/Amorph')
 
-function Ultralightbeam(provider, _options) {
+function Ultralightbeam(provider, options) {
+  arguguard('Ultralightbeam', [Object, Object], arguments)
 
   this.options =  {
     blockPollerInterval: 1000,
@@ -104,7 +107,7 @@ function Ultralightbeam(provider, _options) {
       })
     }
   }
-  _.merge(this.options, _options || {})
+  _.merge(this.options, options)
 
   this.id = 0
   this.provider = provider
@@ -122,45 +125,44 @@ function Ultralightbeam(provider, _options) {
 }
 
 Ultralightbeam.prototype.execute = function execute() {
+  arguguard('ultralightbeam.execute', [], arguments)
   return this.debouncedExecute(this)
 }
 
 Ultralightbeam.prototype.defer = function defer() {
+  arguguard('ultralightbeam.defer', [], arguments)
   return Q.defer()
 }
 
 Ultralightbeam.prototype.reject = function reject(reason) {
+  arguguard('ultralightbeam.reject', ['string'], arguments)
   return Q.reject(reason)
 }
 
 Ultralightbeam.prototype.resolve = function resolve(reason) {
+  arguguard('ultralightbeam.reject', ['string'], arguments)
   return Q.resolve(reason)
 }
 
-Ultralightbeam.prototype.send = function send(
-  transactionRequest, _transactionHook, _maxBlocksToWait
-) {
-  const transactionHook = _transactionHook || this.options.transactionHook
-  const maxBlocksToWait = _maxBlocksToWait || this.options.maxBlocksToWait
-  return new TransactionMonitor(
-    this,
-    transactionRequest,
-    transactionHook,
-    maxBlocksToWait
-  )
+Ultralightbeam.prototype.send = function send(transactionRequest) {
+  arguguard('ultralightbeam.send', [TransactionRequest], arguments)
+  return new TransactionMonitor(this, transactionRequest)
 }
 
 Ultralightbeam.prototype.solDeploy = function solDeploy(bytecode, abi, inputs, options) {
+  arguguard('ultralightbeam.solDeploy', [Amorph, Array, Array, Object], arguments)
   return new SolDeployTransactionRequest(this, bytecode, abi, inputs, options).send().getContractAddress().then((contractAddress) => {
     return new SolWrapper(this, abi, contractAddress)
   })
 }
 
 Ultralightbeam.getTransactionRequest = function getTransactionRequest(options) {
+  arguguard('ultralightbeam.getTransactionRequest', [Object])
   return new TransactionRequest(this, options)
 }
 
 Ultralightbeam.prototype.getSolWrapper = function getSolWrapper(bytecode, abi, inputs, options) {
+  arguguard('ultralightbeam.getSolWrapper', [Amorph, Array, Array, Object])
   return new SolDeploy(this, bytecode, abi, inputs, options)
 }
 

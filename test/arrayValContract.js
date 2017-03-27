@@ -35,7 +35,7 @@ const arrayValInfo = amorphParseSolcOutput(solc.compile(arrayValSol, 1)).ArrayVa
 describe('arrayValContract', () => {
   let arrayValContract
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(arrayValInfo.code, arrayValInfo.abi, []).then((_arrayValContract) => {
+    return ultralightbeam.solDeploy(arrayValInfo.code, arrayValInfo.abi, [], {}).then((_arrayValContract) => {
       arrayValContract = _arrayValContract
     }).should.be.fulfilled
   })
@@ -71,7 +71,7 @@ describe('arrayValContract', () => {
         new Amorph(1, 'number'),
         new Amorph(2, 'number')
       ]
-    ]).transactionPromise
+    ], {}).transactionPromise
   })
 
   it('should getUints() values [0, 1, 2]', () => {
@@ -95,7 +95,7 @@ describe('arrayValContract', () => {
         new Amorph(false, 'boolean'),
         new Amorph(true, 'boolean')
       ]
-    ]).transactionPromise
+    ], {}).transactionPromise
   })
 
   it('should getUintsAndBools() values [[3, 4, 5], [false, true]]', () => {

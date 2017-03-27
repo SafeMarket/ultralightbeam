@@ -1,27 +1,26 @@
-const Ultralightbeam = require('../')
 const ultralightbeam = require('./ultralightbeam')
 const accounts = require('./accounts')
-const errors = require('../lib/errors')
-const blockFlagValidator = require('../lib/validators/blockFlag')
+const countingNumberValidator = require('../lib/validators/countingNumber')
+const ArgumentsLengthError = require('arguguard/errors/user/ArgumentsLength')
 
 describe('validation', () => {
 
   it('should throw ArgumentsLengthError', () => {
     (() => {
       ultralightbeam.eth.getBalance()
-    }).should.throw(errors.ArgumentsLengthError)
+    }).should.throw(ArgumentsLengthError)
   })
 
   it('should throw ArgumentsLengthError', () => {
     (() => {
       ultralightbeam.eth.getBalance(accounts[0].address, 'latest')
-    }).should.throw(errors.ArgumentsLengthError)
+    }).should.throw(ArgumentsLengthError)
   })
 
-  it('should throw validators.blockFlag.Error', () => {
+  it('should throw countingNumberValidator.Error', () => {
     (() => {
-      ultralightbeam.eth.getBlockByFlag(accounts[0].address, false)
-    }).should.throw(blockFlagValidator.Error)
+      ultralightbeam.miner.start(0)
+    }).should.throw(countingNumberValidator.Error)
   })
 
 })

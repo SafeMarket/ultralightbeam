@@ -43,7 +43,7 @@ describe('eventsContract', () => {
     let eventLogs
     it('should be fulfilled', () => {
       const transactionRequest = new SolDeployTransactionRequest(
-        ultralightbeam, eventsContractInfo.code, eventsContractInfo.abi, []
+        ultralightbeam, eventsContractInfo.code, eventsContractInfo.abi, [], {}
       )
       const transactionMonitor = transactionRequest.send()
 
@@ -76,7 +76,7 @@ describe('eventsContract', () => {
       const two = new Amorph(2, 'number')
       return eventsContract.broadcast('doThing(uint256,uint256)', [
         one, two
-      ]).getTransactionReceipt().then((transactionReceipt) => {
+      ], {}).getTransactionReceipt().then((transactionReceipt) => {
         const eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
         eventLogs.should.have.length(2)
         eventLogs[0].values.should.have.length(2)
@@ -101,7 +101,7 @@ describe('eventsContract', () => {
       const hash = random(32)
       return eventsContract.broadcast('tag(bytes5,bytes32)', [
         tag, hash
-      ]).getTransactionReceipt().then((transactionReceipt) => {
+      ], {}).getTransactionReceipt().then((transactionReceipt) => {
         const eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
         eventLogs.should.have.length(1)
 

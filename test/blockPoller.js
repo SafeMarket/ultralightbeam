@@ -8,12 +8,16 @@ const accounts = require('./accounts')
 describe('blockPoller', () => {
 
   const blocks = []
-  const dummyTransaction = new TransactionRequest(ultralightbeam, {
-    to: accounts[0].address,
-    value: new Amorph(1, 'number')
-  })
+  let dummyTransaction
   let blockNumber
   let block
+
+  it('should create dummy transaction', () => {
+    dummyTransaction = new TransactionRequest(ultralightbeam, {
+      to: accounts[0].address,
+      value: new Amorph(1, 'number')
+    })
+  })
 
   it('should be instance of BlockPoller', () => {
     ultralightbeam.blockPoller.should.be.instanceOf(BlockPoller)
