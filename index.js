@@ -19,6 +19,7 @@ function Ultralightbeam(provider, options) {
   arguguard('Ultralightbeam', [Object, Object], arguments)
 
   this.options =  {
+    arguguard: {},
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
     executionDebounce: 100,
@@ -108,6 +109,7 @@ function Ultralightbeam(provider, options) {
     }
   }
   _.merge(this.options, options)
+  _.merge(arguguard.options, this.options.arguguard)
 
   this.id = 0
   this.provider = provider
