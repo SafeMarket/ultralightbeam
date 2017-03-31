@@ -1,1 +1,1 @@
-require('./arrayValContract')
+require('./oog')

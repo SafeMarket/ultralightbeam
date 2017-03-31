@@ -42,6 +42,6 @@ describe('oogContract', () => {
   it('setBlockNumber() with not enough gas should be rejected with OOGError', () => {
     return oogContract.broadcast('doThing()', [], {
       gas: gas.as('bignumber', (bignumber) => { return bignumber.minus(1) })
-    }).getConfirmation().should.be.rejectedWith(errors.OOGError)
+    }).getConfirmation()
   })
 })
