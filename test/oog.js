@@ -1,10 +1,7 @@
 const ultralightbeam = require('./ultralightbeam')
-const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const solc = require('solc')
-const SolWrapper = require('../lib/SolWrapper')
-const errors = require('../lib/errors')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
-const _ = require('lodash')
+const OOGError = require('../lib/errors/OOG')
 
 const oogContractSol =
   `pragma solidity ^0.4.4;
@@ -39,9 +36,9 @@ describe('oogContract', () => {
     })
   })
 
-  it('setBlockNumber() with not enough gas should be rejected with OOGError', () => {
+  it('setBlockNumber() with not enough gas should be rejected with OOG', () => {
     return oogContract.broadcast('doThing()', [], {
       gas: gas.as('bignumber', (bignumber) => { return bignumber.minus(1) })
-    }).getConfirmation().should.be.rejectedWith(errors.OOGError)
+    }).getConfirmation().should.be.rejectedWith(OOGError)
   })
 })

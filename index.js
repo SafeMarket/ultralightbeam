@@ -11,9 +11,11 @@ const TransactionMonitor = require('./lib/TransactionMonitor')
 const TransactionRequest = require('./lib/TransactionRequest')
 const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
 const SolWrapper = require('./lib/SolWrapper')
-const errors = require('./lib/errors')
 const arguguard = require('arguguard')
 const Amorph = require('./lib/Amorph')
+const NoFromError = require('./lib/errors/NoFrom')
+const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
+const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
 
 function Ultralightbeam(provider, options) {
   arguguard('Ultralightbeam', [Object, Object], arguments)
@@ -31,7 +33,7 @@ function Ultralightbeam(provider, options) {
     transactionHook: (transactionRequest) => {
 
       if (!transactionRequest.values.from) {
-        throw new errors.NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
+        throw new NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
       }
 
       let noncePromise
@@ -89,14 +91,14 @@ function Ultralightbeam(provider, options) {
         const balance = results[4]
 
         if (gas.to('bignumber').gt(gasLimit.to('bignumber'))) {
-          throw new errors.ExceedsBlockLimitError(`Gas (${gas.to('number')}) exceeds block gas limit (${gasLimit})`)
+          throw new ExceedsBlockLimitError(`Gas (${gas.to('number')}) exceeds block gas limit (${gasLimit})`)
         }
         const gasCost = gas.as('bignumber', (bignumber) => {
           return bignumber.times(gasPrice.to('bignumber'))
         })
 
         if (gasCost.to('bignumber').gt(balance.to('bignumber'))) {
-          throw new errors.BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${transactionRequest.values.from.address.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
+          throw new BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${transactionRequest.values.from.address.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
         }
 
         return this.options.gasCostHook(gasCost).then(() => {
