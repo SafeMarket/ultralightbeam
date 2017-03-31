@@ -1,1 +1,1 @@
-require('./oog')
+require('./InvalidFunctionSignatureError')
