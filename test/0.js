@@ -1,1 +1,1 @@
-require('./InvalidFunctionSignatureError')
+require('./interfaces')

@@ -1,6 +1,5 @@
 const Q = require('q')
-const bulk = require('bulk-require')
-const interfaces = bulk(__dirname + '/lib/interfaces/', '**/*.js')
+const interfacesPojo = require('./lib/interfacesPojo')
 const Batch = require('./lib/Batch')
 const Protocol = require('./lib/Protocol')
 const _execute = require('./lib/execute')
@@ -117,10 +116,10 @@ function Ultralightbeam(provider, options) {
   this.provider = provider
   this.batch = new Batch(this)
   this.batches = []
-  this.web3 = new Protocol(this, interfaces.web3)
-  this.net = new Protocol(this, interfaces.net)
-  this.eth = new Protocol(this, interfaces.eth)
-  this.miner = new Protocol(this, interfaces.miner)
+  this.web3 = new Protocol(this, interfacesPojo.web3)
+  this.net = new Protocol(this, interfacesPojo.net)
+  this.eth = new Protocol(this, interfacesPojo.eth)
+  this.miner = new Protocol(this, interfacesPojo.miner)
   this.blockPoller = new BlockPoller(this)
   this.debouncedExecute = _.debounce(_execute, this.options.executionDebounce)
 
