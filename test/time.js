@@ -1,2 +1,2 @@
-// require('time-require')
-// require('../')
+require('time-require')
+require('../')
