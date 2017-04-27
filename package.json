@@ -29,7 +29,8 @@
     "ethereumjs-testrpc": "git+https://git@github.com/safemarket/testrpc.git",
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
-    "solc": "0.4.4"
+    "solc": "0.4.4",
+    "time-require": "^0.1.2"
   },
   "dependencies": {
     "amorph": "^1.1.0",
@@ -37,7 +38,7 @@
     "amorph-bignumber": "^1.0.0",
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^1.0.2",
-    "arguguard": "^0.6.0",
+    "arguguard": "^2.0.1",
     "ethereum-account-amorph": "^0.0.1",
     "ethjs-signer": "^0.1.1",
     "is-pojo": "^1.0.2",

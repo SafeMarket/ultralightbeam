@@ -3,7 +3,6 @@ const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest'
 const solc = require('solc')
 const SolWrapper = require('../lib/SolWrapper')
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
-const _ = require('lodash')
 const accounts = require('./accounts')
 const Amorph = require('../lib/Amorph')
 const crypto = require('crypto')
