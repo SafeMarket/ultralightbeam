@@ -16,7 +16,7 @@ const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
 const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
 
 function Ultralightbeam(provider, options) {
-  arguguard('Ultralightbeam', ['Object', 'Object'], arguments)
+  arguguard('Ultralightbeam', ['*', 'Object'], arguments)
 
   this.options =  {
     arguguard: {},
