@@ -38,7 +38,7 @@
     "amorph-bignumber": "^1.0.0",
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^1.0.2",
-    "arguguard": "^2.1.0",
+    "arguguard": "^2.1.1",
     "ethereum-account-amorph": "^0.0.1",
     "ethjs-signer": "^0.1.1",
     "is-pojo": "^1.0.2",
