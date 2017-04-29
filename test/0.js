@@ -1,1 +1,1 @@
-require('./interfaces')
+require('time-require')

@@ -33,7 +33,7 @@
     "time-require": "^0.1.2"
   },
   "dependencies": {
-    "amorph": "^1.1.0",
+    "amorph": "^1.2.0",
     "amorph-base58": "^1.0.0",
     "amorph-bignumber": "^1.0.0",
     "amorph-buffer": "^1.0.0",
@@ -43,6 +43,7 @@
     "ethjs-signer": "^0.1.1",
     "is-pojo": "^1.0.2",
     "lodash": "^4.17.2",
+    "nobject": "^0.1.0",
     "q": "^1.4.1",
     "testable-error": "^0.1.1",
     "web3": "^0.18.2"
