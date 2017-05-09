@@ -30,7 +30,8 @@
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
     "solc": "0.4.4",
-    "time-require": "^0.1.2"
+    "time-require": "^0.1.2",
+    "ethereum-account-amorph": "^0.0.1"
   },
   "dependencies": {
     "amorph": "^1.2.0",
@@ -39,7 +40,6 @@
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^1.0.2",
     "arguguard": "^2.1.1",
-    "ethereum-account-amorph": "^0.0.1",
     "ethjs-signer": "^0.1.1",
     "is-pojo": "^1.0.2",
     "lodash": "^4.17.2",
