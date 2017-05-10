@@ -34,7 +34,7 @@
     "ethereum-account-amorph": "^0.0.1"
   },
   "dependencies": {
-    "amorph": "^1.2.0",
+    "amorph": "^1.3.2",
     "amorph-base58": "^1.0.0",
     "amorph-bignumber": "^1.0.0",
     "amorph-buffer": "^1.0.0",
