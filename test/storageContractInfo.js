@@ -1,4 +1,4 @@
-const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const amorphParseSolcOutput = require('./parseSolcOutput')
 const solc = require('solc')
 const storageContractSol = require('./storageContractSol')
 

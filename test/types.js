@@ -4,7 +4,7 @@ const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const stripType = require('../lib/stripType')
 const account = require('./account')
-const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const amorphParseSolcOutput = require('./parseSolcOutput')
 
 const typesContractSol = `
   pragma solidity ^0.4.4;

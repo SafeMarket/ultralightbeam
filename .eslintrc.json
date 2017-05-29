@@ -1,5 +1,5 @@
 {
-    "extends": "eslint-config-airbnb-lite",
+    "extends": "airbnb-lite",
     "rules": {
     	"no-param-reassign": "off",
     	"no-alert": "off",

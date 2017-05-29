@@ -2,9 +2,6 @@ const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const accounts = require('./accounts')
 const account = require('./account')
-const Amorph = require('../lib/Amorph')
-
-Amorph.ready()
 
 const gasLimit = 4000000
 

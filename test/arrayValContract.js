@@ -1,7 +1,7 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
-const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const amorphParseSolcOutput = require('./parseSolcOutput')
 
 const arrayValSol = `
   pragma solidity ^0.4.4;

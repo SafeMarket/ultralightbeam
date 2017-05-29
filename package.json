@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -t 10000 --require test/chai.js --bail"
+    "test": "mocha -t 60000 --bail"
   },
   "repository": {
     "type": "git",
@@ -17,35 +17,37 @@
   },
   "homepage": "https://github.com/SafeMarket/ultralightbeam#readme",
   "devDependencies": {
-    "amorph-parse-solc-output": "0.0.2",
-    "babel-eslint": "^7.1.1",
+    "amorph-parse-solc-output": "^0.1.1",
+    "babel-eslint": "^7.2.3",
     "chai": "^3.5.0",
-    "chai-amorph": "0.0.2",
+    "chai-amorph": "0.0.5",
     "chai-as-promised": "^6.0.0",
-    "chai-web3-bindings": "^0.1.0",
+    "chai-web3-bindings": "^0.1.2",
     "dir-to-json": "0.0.3",
-    "eslint": "^3.11.1",
+    "eslint": "^3.19.0",
     "eslint-config-airbnb-lite": "^1.0.4",
+    "ethereum-account-amorph": "^1.0.0",
     "ethereumjs-testrpc": "git+https://git@github.com/safemarket/testrpc.git",
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
     "solc": "0.4.4",
-    "time-require": "^0.1.2",
-    "ethereum-account-amorph": "^0.0.1"
+    "time-require": "^0.1.2"
   },
   "dependencies": {
-    "amorph": "^1.3.2",
+    "amorph": "^2.0.1",
     "amorph-base58": "^1.0.0",
     "amorph-bignumber": "^1.0.0",
     "amorph-buffer": "^1.0.0",
-    "amorph-hex": "^1.0.2",
+    "amorph-hex": "^2.0.0",
     "arguguard": "^2.1.1",
+    "ethereumjs-testrpc": "^3.0.3",
     "ethjs-signer": "^0.1.1",
     "is-pojo": "^1.0.2",
     "lodash": "^4.17.2",
     "nobject": "^0.1.0",
     "q": "^1.4.1",
-    "testable-error": "^0.1.1",
+    "solc": "^0.4.4",
+    "testable-error": "^0.1.2",
     "web3": "^0.18.2"
   }
 }

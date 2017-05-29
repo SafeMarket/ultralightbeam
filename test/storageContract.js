@@ -22,6 +22,9 @@ describe('storageContract', () => {
       { value: new Amorph(1, 'number') }
     ).then((_storageContract) => {
       storageContract = _storageContract
+    }, (err) => {
+      console.log(err)
+      throw err
     }).should.be.fulfilled
   })
 

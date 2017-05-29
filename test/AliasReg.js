@@ -2,7 +2,7 @@ const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
 const Amorph = require('../lib/Amorph')
 const account = require('./account')
-const amorphParseSolcOutput = require('amorph-parse-solc-output')
+const amorphParseSolcOutput = require('./parseSolcOutput')
 
 const aliasRegSol = `
   pragma solidity ^0.4.4;
@@ -31,7 +31,7 @@ const aliasRegSol = `
     }
   }`
 
-const aliasRegInfo = amorphParseSolcOutput(solc.compile(aliasRegSol, 1)).aliasReg
+const aliasRegInfo = amorphParseSolcOutput(solc.compile(aliasRegSol, 1), Amorph).aliasReg
 
 describe('aliasReg', () => {
 
@@ -53,7 +53,7 @@ describe('aliasReg', () => {
   it('myAlias should be an address', () => {
     return aliasReg.fetch(
       'getAddr(bytes32)', [myAlias]
-    ).should.eventually.amorphTo('hex.prefixed').be.address()
+    ).should.eventually.amorphTo('hex.prefixed').be.an.address()
   })
 
   it('myAlias should be zero', () => {

@@ -82,7 +82,7 @@ describe('eth', () => {
 
   describe('getTransactionCount', () => {
 
-    it('account0 should be instanceof Amorph', () => {
+    it('account0 should instance of Amorph', () => {
       return ultralightbeam.eth.getTransactionCount(
           accounts[0].address
         )
@@ -211,11 +211,20 @@ describe('eth', () => {
     })
 
     it('blockByHash should be instance of Block', () => {
-      return blockByHash.should.be.instanceof(Block)
+      blockByHash.should.be.instanceof(Block)
     })
 
-    it('blockByNumber should deep equal blockByHash', () => {
-      return blockByNumber.should.deep.equal(blockByHash)
+    it('blockByNumber should have same keys as blockByHash', () => {
+      blockByNumber.should.have.keys(Object.keys(blockByHash))
+      blockByHash.should.have.keys(Object.keys(blockByNumber))
+    })
+
+    after(() => {
+      Object.keys(blockByHash).forEach((key) => {
+        it(`blockByNumber.${key} should amorph equal blockByHash.${key}`, () => {
+          blockNumber[key].should.amorphEqual(blockByHash[key])
+        })
+      })
     })
 
   })
