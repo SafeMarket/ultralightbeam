@@ -1,4 +1,3 @@
-const Amorph = require('../lib/Amorph')
 const TransactionRequest = require('../lib/TransactionRequest')
 const accounts = require('./accounts')
 const ArgumentInstanceError = require('arguguard/errors/user/ArgumentInstance')
@@ -23,13 +22,13 @@ describe('TransactionRequest', () => {
     transactionRequest2 = new TransactionRequest(ultralightbeam, {
       from: accounts[0],
       to: accounts[1].address,
-      data: new Amorph('01', 'hex'),
-      nonce: new Amorph('01', 'hex')
+      data: new ultralightbeam.Amorph('01', 'hex'),
+      nonce: new ultralightbeam.Amorph('01', 'hex')
     })
   })
 
   it('should .toRawSigned()', () => {
-    transactionRequest2.toRawSigned().should.be.instanceof(Amorph)
+    transactionRequest2.toRawSigned().should.be.instanceof(ultralightbeam.Amorph)
   })
 
   it('.toPojo should have keys [from, to, data] ', () => {
@@ -40,7 +39,7 @@ describe('TransactionRequest', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        from: new Amorph('01', 'hex')
+        from: new ultralightbeam.Amorph('01', 'hex')
       }).send()
     }).should.throw(ArgumentInstanceError)
   })
@@ -49,7 +48,7 @@ describe('TransactionRequest', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        to: new Amorph('01', 'hex')
+        to: new ultralightbeam.Amorph('01', 'hex')
       })
     }).should.throw(addressValidator.Error)
   })
@@ -58,7 +57,7 @@ describe('TransactionRequest', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        bogus: new Amorph('01', 'hex')
+        bogus: new ultralightbeam.Amorph('01', 'hex')
       })
     }).should.throw(transactionRequestFieldValidator.Error)
   })

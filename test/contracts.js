@@ -2,7 +2,7 @@ const glob = require('glob')
 const fs = require('fs')
 const solc = require('solc')
 const _ = require('lodash')
-const Amorph = require('../lib/Amorph')
+const ultralightbeam = require('./ultralightbeam')
 
 const contracts = {}
 
@@ -26,8 +26,8 @@ describe('contracts', () => {
     _.forEach(solcOutput.contracts, (_contract, name) => {
       contracts[name] = {
         abi: JSON.parse(_contract.interface),
-        code: new Amorph(_contract.code, 'hex'),
-        runcode: new Amorph(_contract.runcode, 'hex')
+        code: new ultralightbeam.Amorph(_contract.code, 'hex'),
+        runcode: new ultralightbeam.Amorph(_contract.runcode, 'hex')
       }
     })
   })

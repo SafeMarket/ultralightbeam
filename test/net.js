@@ -1,5 +1,4 @@
 const ultralightbeam = require('./ultralightbeam')
-const Amorph = require('../lib/Amorph')
 
 describe('net', () => {
 

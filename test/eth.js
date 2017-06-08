@@ -1,4 +1,3 @@
-const Amorph = require('../lib/Amorph')
 const Q = require('q')
 const ultralightbeam = require('./ultralightbeam')
 const storageContractSol = require('./storageContractSol')
@@ -37,7 +36,7 @@ describe('eth', () => {
       balances.should.be.instanceof(Array)
       balances.should.have.length(10)
       balances.forEach((balance, index) => {
-        balance.should.be.instanceof(Amorph)
+        balance.should.be.instanceof(ultralightbeam.Amorph)
         balance.to('number').should.be.gt(0)
       })
     })
@@ -58,7 +57,7 @@ describe('eth', () => {
       return ultralightbeam
         .eth.getStorageAt(
           storageContract.address,
-          new Amorph(positionArray, 'array')
+          new ultralightbeam.Amorph(positionArray, 'array')
         )
         .should.eventually.amorphTo('number').equal(1234)
     })
@@ -69,9 +68,9 @@ describe('eth', () => {
         .concat(account.address.to('array'))
         .concat(new Array(31).fill(0))
         .concat([1])
-      const key = new Amorph(keyArray, 'array')
+      const key = new ultralightbeam.Amorph(keyArray, 'array')
       const positionHex = web3Sha3(key.to('hex.prefixed'), { encoding: 'hex' })
-      const position = new Amorph(positionHex, 'hex')
+      const position = new ultralightbeam.Amorph(positionHex, 'hex')
 
       return ultralightbeam
         .eth.getStorageAt(storageContract.address, position)
@@ -86,7 +85,7 @@ describe('eth', () => {
       return ultralightbeam.eth.getTransactionCount(
           accounts[0].address
         )
-        .should.eventually.be.instanceof(Amorph)
+        .should.eventually.be.instanceof(ultralightbeam.Amorph)
     })
 
     it('account0 should be greater than zero', () => {
@@ -150,7 +149,7 @@ describe('eth', () => {
       const transactionRequest = new TransactionRequest(ultralightbeam, {
         from: account,
         to: accounts[1].address,
-        value: new Amorph(1, 'number')
+        value: new ultralightbeam.Amorph(1, 'number')
       })
       return ultralightbeam.eth.estimateGas(
         transactionRequest
@@ -176,7 +175,7 @@ describe('eth', () => {
     })
 
     it('should be an integer', () => {
-      blockNumber.should.be.instanceof(Amorph)
+      blockNumber.should.be.instanceof(ultralightbeam.Amorph)
       const remainder = blockNumber.to('number') % 1
       remainder.should.equal(0)
     })

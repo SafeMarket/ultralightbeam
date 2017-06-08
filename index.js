@@ -14,9 +14,12 @@ const arguguard = require('arguguard')
 const NoFromError = require('./lib/errors/NoFrom')
 const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
 const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
+const setAmorph = require('./lib/setAmorph')
 
-function Ultralightbeam(provider, options) {
-  arguguard('Ultralightbeam', ['*', 'Object'], arguments)
+function Ultralightbeam(provider, Amorph, options) {
+  arguguard('Ultralightbeam', ['*', 'Function', 'Object'], arguments)
+
+  this.Amorph = setAmorph(Amorph)
 
   this.options =  {
     arguguard: {},

@@ -4,7 +4,6 @@ const solc = require('solc')
 const SolWrapper = require('../lib/SolWrapper')
 const amorphParseSolcOutput = require('./parseSolcOutput')
 const accounts = require('./accounts')
-const Amorph = require('../lib/Amorph')
 const crypto = require('crypto')
 
 const eventsContractSol =
@@ -33,7 +32,7 @@ const eventsContractSol =
 const eventsContractInfo = amorphParseSolcOutput(solc.compile(eventsContractSol, 1)).Events
 
 function random(length) {
-  return new Amorph(crypto.randomBytes(length), 'buffer')
+  return new ultralightbeam.Amorph(crypto.randomBytes(length), 'buffer')
 }
 
 describe('eventsContract', () => {
@@ -45,7 +44,6 @@ describe('eventsContract', () => {
         ultralightbeam, eventsContractInfo.code, eventsContractInfo.abi, [], {}
       )
       const transactionMonitor = transactionRequest.send()
-
       return transactionMonitor.getTransactionReceipt().then((
         transactionReceipt
       ) => {
@@ -71,8 +69,8 @@ describe('eventsContract', () => {
 
   describe('doThing()', () => {
     it('should emit correct events', () => {
-      const one = new Amorph(1, 'number')
-      const two = new Amorph(2, 'number')
+      const one = new ultralightbeam.Amorph(1, 'number')
+      const two = new ultralightbeam.Amorph(2, 'number')
       return eventsContract.broadcast('doThing(uint256,uint256)', [
         one, two
       ], {}).getTransactionReceipt().then((transactionReceipt) => {

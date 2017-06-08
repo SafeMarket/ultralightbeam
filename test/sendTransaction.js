@@ -1,9 +1,7 @@
 const ultralightbeam = require('./ultralightbeam')
 const TransactionRequest = require('../lib/TransactionRequest')
 const storageContractInfo = require('./storageContractInfo')
-const storageContract = require('./storageContract')
 const accounts = require('./accounts')
-const Amorph = require('Amorph')
 const Q = require('q')
 const Transaction = require('../lib/Transaction')
 const TransactionReceipt = require('../lib/TransactionReceipt')
@@ -38,7 +36,7 @@ describe('sendTransaction', () => {
     transactionMonitor = new TransactionRequest(ultralightbeam, {
       from: accounts[0],
       to: accounts[1].address,
-      value: new Amorph(1, 'number')
+      value: new ultralightbeam.Amorph(1, 'number')
     }).send()
   })
 
@@ -53,7 +51,7 @@ describe('sendTransaction', () => {
   })
 
   it('transactionHash should be an Amorph', () => {
-    transactionHash.should.be.instanceOf(Amorph)
+    transactionHash.should.be.instanceof(ultralightbeam.Amorph)
   })
 
   it('transactionHash should be 32 bytes long', () => {
@@ -82,7 +80,7 @@ describe('sendTransaction', () => {
 
     const transactionRequest = new TransactionRequest(ultralightbeam, {
       data: storageContractInfo.code,
-      gas: new Amorph(3141592, 'number')
+      gas: new ultralightbeam.Amorph(3141592, 'number')
     })
 
     return transactionRequest.send().getTransactionReceipt().then((

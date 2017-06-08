@@ -1,6 +1,6 @@
 const amorphParseSolcOutput = require('amorph-parse-solc-output')
-const Amorph = require('../lib/Amorph')
+const ultralightbeam = require('./ultralightbeam')
 
 module.exports = function parseSolcOutput(output) {
-  return amorphParseSolcOutput(output, Amorph)
+  return amorphParseSolcOutput(output, ultralightbeam.Amorph)
 }

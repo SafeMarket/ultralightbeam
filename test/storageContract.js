@@ -1,5 +1,4 @@
 const ultralightbeam = require('./ultralightbeam')
-const Amorph = require('../lib/Amorph')
 const Q = require('q')
 const storageContractInfo = require('./storageContractInfo')
 const accounts = require('./accounts')
@@ -19,12 +18,9 @@ describe('storageContract', () => {
       storageContractInfo.code,
       storageContractInfo.abi,
       [],
-      { value: new Amorph(1, 'number') }
+      { value: new ultralightbeam.Amorph(1, 'number') }
     ).then((_storageContract) => {
       storageContract = _storageContract
-    }, (err) => {
-      console.log(err)
-      throw err
     }).should.be.fulfilled
   })
 

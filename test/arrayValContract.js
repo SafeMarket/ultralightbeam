@@ -1,6 +1,5 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
-const Amorph = require('../lib/Amorph')
 const amorphParseSolcOutput = require('./parseSolcOutput')
 
 const arrayValSol = `
@@ -67,9 +66,9 @@ describe('arrayValContract', () => {
   it('should setUints([0, 1, 2])', () => {
     return arrayValContract.broadcast('setUints(uint256[])', [
       [
-        new Amorph(0, 'number'),
-        new Amorph(1, 'number'),
-        new Amorph(2, 'number')
+        new ultralightbeam.Amorph(0, 'number'),
+        new ultralightbeam.Amorph(1, 'number'),
+        new ultralightbeam.Amorph(2, 'number')
       ]
     ], {}).transactionPromise
   })
@@ -87,13 +86,13 @@ describe('arrayValContract', () => {
   it('should setUintsAndBools([3, 4, 5], [false, true])', () => {
     return arrayValContract.broadcast('setUintsAndBools(uint256[],bool[])', [
       [
-        new Amorph(3, 'number'),
-        new Amorph(4, 'number'),
-        new Amorph(5, 'number')
+        new ultralightbeam.Amorph(3, 'number'),
+        new ultralightbeam.Amorph(4, 'number'),
+        new ultralightbeam.Amorph(5, 'number')
       ],
       [
-        new Amorph(false, 'boolean'),
-        new Amorph(true, 'boolean')
+        new ultralightbeam.Amorph(false, 'boolean'),
+        new ultralightbeam.Amorph(true, 'boolean')
       ]
     ], {}).transactionPromise
   })

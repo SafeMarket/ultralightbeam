@@ -1,7 +1,5 @@
 const ultralightbeam = require('./ultralightbeam')
-const SolDeployTransactionRequest = require('../lib/SolDeployTransactionRequest')
 const solc = require('solc')
-const Amorph = require('../lib/Amorph')
 const stripType = require('../lib/stripType')
 const account = require('./account')
 const amorphParseSolcOutput = require('./parseSolcOutput')

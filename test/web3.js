@@ -1,5 +1,4 @@
 const ultralightbeam = require('./ultralightbeam')
-const Amorph = require('../lib/Amorph')
 
 describe('web3', () => {
 
@@ -28,14 +27,14 @@ describe('web3', () => {
     let ciphertext
 
     it('should return ciphertext', () => {
-      const plaintext = new Amorph('0x68656c6c6f20776f726c64', 'hex.prefixed')
+      const plaintext = new ultralightbeam.Amorph('0x68656c6c6f20776f726c64', 'hex.prefixed')
       return ultralightbeam.web3.sha3(plaintext).then((_ciphertext) => {
         ciphertext = _ciphertext
       }).should.be.fulfilled
     })
 
     it('ciphertext should be instance of Amorph"', () => {
-      ciphertext.should.be.instanceof(Amorph)
+      ciphertext.should.be.instanceof(ultralightbeam.Amorph)
     })
 
     it('ciphertext should be correct"', () => {

@@ -2,6 +2,7 @@ const Ultralightbeam = require('../')
 const TestRPC = require('ethereumjs-testrpc')
 const accounts = require('./accounts')
 const account = require('./account')
+const Amorph = require('amorph')
 
 const gasLimit = 4000000
 
@@ -15,7 +16,7 @@ const provider = TestRPC.provider({
     }
   })
 })
-const ultralightbeam = new Ultralightbeam(provider, {
+const ultralightbeam = new Ultralightbeam(provider, Amorph, {
   defaultAccount: account
 })
 

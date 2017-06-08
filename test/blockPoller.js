@@ -1,4 +1,3 @@
-const Amorph = require('../lib/Amorph')
 const BlockPoller = require('../lib/BlockPoller')
 const Block = require('../lib/Block')
 const TransactionRequest = require('../lib/TransactionRequest')
@@ -15,7 +14,7 @@ describe('blockPoller', () => {
   it('should create dummy transaction', () => {
     dummyTransaction = new TransactionRequest(ultralightbeam, {
       to: accounts[0].address,
-      value: new Amorph(1, 'number')
+      value: new ultralightbeam.Amorph(1, 'number')
     })
   })
 
