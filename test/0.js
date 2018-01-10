@@ -6,4 +6,4 @@ process.on('uncaughtException', (error) => {
   //throw error
 })
 
-require('./failedTransaction')
+require('./badContract')
