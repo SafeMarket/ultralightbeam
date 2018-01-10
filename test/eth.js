@@ -113,10 +113,10 @@ describe('eth', () => {
       })
     })
 
-    it('should be zeros for account0', () => {
+    it('should be empty for account0', () => {
       return ultralightbeam.eth.getCode(
         accounts[0].address
-      ).should.eventually.amorphTo('number').equal(0)
+      ).should.eventually.amorphTo('array').have.length(0)
     })
 
     it('should not be empty for storageContract.address ', () => {
