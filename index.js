@@ -26,7 +26,6 @@ function Ultralightbeam(provider, Amorph, options) {
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
     executionDebounce: 100,
-    deduceOOGErrors: true,
     gasMultiplier: 1.2,
     gasCostHook: (gasCost) => {
       return Q.resolve()

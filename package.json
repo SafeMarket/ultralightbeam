@@ -28,7 +28,7 @@
     "eslint": "^3.19.0",
     "eslint-config-airbnb-lite": "^1.0.4",
     "ethereum-account-amorph": "^2.0.0",
-    "ethereumjs-testrpc": "git+https://git@github.com/safemarket/testrpc.git",
+    "ganache-cli": "^6.0.3",
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
     "random-amorph": "^2.0.0",
