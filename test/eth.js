@@ -282,37 +282,4 @@ describe('eth', () => {
 
   })
 
-  describe('compileSolidity', () => {
-
-    let solidityOutput
-    let storageContract
-
-    before(() => {
-      return storageContractPromise.then((_storageContract) => {
-        storageContract = _storageContract
-      })
-    })
-
-    it('should compile storageContract', () => {
-      return ultralightbeam.eth.compileSolidity(
-        storageContractSol
-      ).then((_solidityOutput) => {
-        solidityOutput = _solidityOutput
-      }).should.be.fulfilled
-    })
-
-    it('solidityOutput should be instanceof SolidityOutput', () => {
-      solidityOutput.should.be.instanceof(SolidityOutput)
-    })
-
-    it('code should be correct', () => {
-      solidityOutput.code.should.amorphEqual(storageContractInfo.code)
-    })
-
-    it('abi should be correct', () => {
-      solidityOutput.info.abiDefinition.should.deep.equal(storageContractInfo.abi)
-    })
-
-  })
-
 })
