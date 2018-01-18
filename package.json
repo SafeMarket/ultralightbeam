@@ -41,6 +41,7 @@
     "amorph-buffer": "^1.0.0",
     "amorph-hex": "^2.0.0",
     "arguguard": "^2.1.1",
+    "bluebird": "^3.5.1",
     "ethereum-account-amorph": "^2.0.0",
     "ethereumjs-testrpc": "^3.0.3",
     "ethjs-signer": "^0.1.1",

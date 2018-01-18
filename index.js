@@ -1,4 +1,3 @@
-const Q = require('q')
 const interfacesPojo = require('./lib/interfacesPojo')
 const Batch = require('./lib/Batch')
 const Protocol = require('./lib/Protocol')
@@ -15,6 +14,7 @@ const NoFromError = require('./lib/errors/NoFrom')
 const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
 const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
 const setAmorph = require('./lib/setAmorph')
+const Promise = require('bluebird')
 
 function Ultralightbeam(provider, Amorph, options) {
   arguguard('Ultralightbeam', ['*', 'Function', 'Object'], arguments)
@@ -28,7 +28,7 @@ function Ultralightbeam(provider, Amorph, options) {
     executionDebounce: 100,
     gasMultiplier: 1.2,
     gasCostHook: (gasCost) => {
-      return Q.resolve()
+      return this.resolve()
     },
     transactionHook: (transactionRequest) => {
 
@@ -42,23 +42,23 @@ function Ultralightbeam(provider, Amorph, options) {
       let gasLimitPromise
 
       if (transactionRequest.values.nonce) {
-        noncePromise = Q.resolve(transactionRequest.values.nonce)
+        noncePromise = this.resolve(transactionRequest.values.nonce)
       } else {
         noncePromise = this.eth.getTransactionCount(transactionRequest.values.from.address)
       }
 
       if (transactionRequest.values.gasPrice) {
-        gasPricePromise = Q.resolve(transactionRequest.values.gasPrice)
+        gasPricePromise = this.resolve(transactionRequest.values.gasPrice)
       } else {
         if (this.blockPoller.gasPrice) {
-          gasPricePromise = Q.resolve(this.blockPoller.gasPrice)
+          gasPricePromise = this.resolve(this.blockPoller.gasPrice)
         } else {
           gasPricePromise = this.blockPoller.gasPricePromise
         }
       }
 
       if (transactionRequest.values.gas) {
-        gasPromise = Q.resolve(transactionRequest.values.gas)
+        gasPromise = this.resolve(transactionRequest.values.gas)
       } else {
         gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
           return gas.as('bignumber', (bignumber) => {
@@ -68,14 +68,14 @@ function Ultralightbeam(provider, Amorph, options) {
       }
 
       if (this.blockPoller.block) {
-        gasLimitPromise = Q.resolve(this.blockPoller.block.gasLimit)
+        gasLimitPromise = this.resolve(this.blockPoller.block.gasLimit)
       } else {
         gasLimitPromise = this.blockPoller.blockPromise.then((block) => {
           return block.gasLimit
         })
       }
 
-      return Q.all([
+      return Promise.all([
         noncePromise,
         gasPromise,
         gasPricePromise,
@@ -133,17 +133,22 @@ Ultralightbeam.prototype.execute = function execute() {
 
 Ultralightbeam.prototype.defer = function defer() {
   arguguard('ultralightbeam.defer', [], arguments)
-  return Q.defer()
+  const deferred = {}
+  deferred.promise = new Promise((resolve, reject) => {
+    deferred.resolve = resolve
+    deferred.reject = reject
+  })
+  return deferred
 }
 
 Ultralightbeam.prototype.reject = function reject(reason) {
-  arguguard('ultralightbeam.reject', ['string'], arguments)
-  return Q.reject(reason)
+  arguguard('ultralightbeam.reject', ['*'], arguments)
+  return Promise.reject(reason)
 }
 
 Ultralightbeam.prototype.resolve = function resolve(reason) {
-  arguguard('ultralightbeam.reject', ['string'], arguments)
-  return Q.resolve(reason)
+  arguguard('ultralightbeam.reject', ['*'], arguments)
+  return Promise.resolve(reason)
 }
 
 Ultralightbeam.prototype.send = function send(transactionRequest) {
