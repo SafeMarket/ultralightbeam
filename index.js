@@ -9,20 +9,18 @@ const TransactionMonitor = require('./lib/TransactionMonitor')
 const TransactionRequest = require('./lib/TransactionRequest')
 const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
 const SolWrapper = require('./lib/SolWrapper')
-const arguguard = require('arguguard')
+const defunction = require('defunction')
+const v = require('./lib/validates')
 const NoFromError = require('./lib/errors/NoFrom')
 const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
 const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
-const setAmorph = require('./lib/setAmorph')
 const Promise = require('bluebird')
+const amorphHex = require('amorph-hex')
+const amorphBignumber = require('amorph-bignumber')
 
-function Ultralightbeam(provider, Amorph, options) {
-  arguguard('Ultralightbeam', ['*', 'Function', 'Object'], arguments)
-
-  this.Amorph = setAmorph(Amorph)
+const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefined, function Ultralightbeam(provider, options) {
 
   this.options =  {
-    arguguard: {},
     blockPollerInterval: 1000,
     maxBlocksToWait: 3,
     executionDebounce: 100,
@@ -61,7 +59,7 @@ function Ultralightbeam(provider, Amorph, options) {
         gasPromise = this.resolve(transactionRequest.values.gas)
       } else {
         gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
-          return gas.as('bignumber', (bignumber) => {
+          return gas.as(amorphBignumber.unsigned, (bignumber) => {
             return bignumber.times(this.options.gasMultiplier).floor()
           })
         })
@@ -88,15 +86,15 @@ function Ultralightbeam(provider, Amorph, options) {
         const gasLimit = results[3]
         const balance = results[4]
 
-        if (gas.to('bignumber').gt(gasLimit.to('bignumber'))) {
-          throw new ExceedsBlockLimitError(`Gas (${gas.to('number')}) exceeds block gas limit (${gasLimit})`)
+        if (gas.to(amorphBignumber.unsigned).gt(gasLimit.to(amorphBignumber.unsigned))) {
+          throw new ExceedsBlockLimitError(`Gas (${gas.to(amorphBignumber.unsigned)}) exceeds block gas limit (${gasLimit.to(amorphBignumber.unsigned)})`)
         }
-        const gasCost = gas.as('bignumber', (bignumber) => {
-          return bignumber.times(gasPrice.to('bignumber'))
+        const gasCost = gas.as(amorphBignumber.unsigned, (bignumber) => {
+          return bignumber.times(gasPrice.to(amorphBignumber.unsigned))
         })
 
-        if (gasCost.to('bignumber').gt(balance.to('bignumber'))) {
-          throw new BalanceTooLowError(`This transaction costs ${gasCost.to('number')} wei. Account ${transactionRequest.values.from.address.to('hex.prefixed')} only has ${balance.to('number')} wei.`)
+        if (gasCost.to(amorphBignumber.unsigned).gt(balance.to(amorphBignumber.unsigned))) {
+          throw new BalanceTooLowError(`This transaction costs ${gasCost.to(amorphBignumber.unsigned)} wei. Account ${transactionRequest.values.from.address.to(amorphHex.prefixed)} only has ${balance.to(amorphBignumber.unsigned)} wei.`)
         }
 
         return this.options.gasCostHook(gasCost).then(() => {
@@ -109,7 +107,6 @@ function Ultralightbeam(provider, Amorph, options) {
     }
   }
   _.merge(this.options, options)
-  _.merge(arguguard.options, this.options.arguguard)
 
   this.id = 0
   this.provider = provider
@@ -124,53 +121,47 @@ function Ultralightbeam(provider, Amorph, options) {
 
   this.blockPoller.start(this.options.blockPollerInterval)
   this.emitter = new Emitter
-}
+})
 
-Ultralightbeam.prototype.execute = function execute() {
-  arguguard('ultralightbeam.execute', [], arguments)
+Ultralightbeam.prototype.execute = defunction([], v.anything, function execute() {
   return this.debouncedExecute(this)
-}
+})
 
-Ultralightbeam.prototype.defer = function defer() {
-  arguguard('ultralightbeam.defer', [], arguments)
+Ultralightbeam.prototype.defer = defunction([], v.promiseStub, function defer() {
   const deferred = {}
   deferred.promise = new Promise((resolve, reject) => {
     deferred.resolve = resolve
     deferred.reject = reject
   })
   return deferred
-}
+})
 
-Ultralightbeam.prototype.reject = function reject(reason) {
-  arguguard('ultralightbeam.reject', ['*'], arguments)
+Ultralightbeam.prototype.reject = defunction([v.optionalAnything], v.promise, function reject(reason) {
   return Promise.reject(reason)
-}
+})
 
-Ultralightbeam.prototype.resolve = function resolve(reason) {
-  arguguard('ultralightbeam.reject', ['*'], arguments)
+Ultralightbeam.prototype.resolve = defunction([v.optionalAnything], v.promise, function resolve(reason) {
   return Promise.resolve(reason)
-}
+})
 
-Ultralightbeam.prototype.send = function send(transactionRequest) {
-  arguguard('ultralightbeam.send', ['TransactionRequest'], arguments)
+Ultralightbeam.prototype.send = defunction([v.transactionRequestish], v.transactionMonitor, function send(transactionRequest) {
   return new TransactionMonitor(this, transactionRequest)
-}
+})
 
-Ultralightbeam.prototype.solDeploy = function solDeploy(bytecode, abi, inputs, options) {
-  arguguard('ultralightbeam.solDeploy', ['Amorph', 'Array', 'Array', 'Object'], arguments)
-  return new SolDeployTransactionRequest(this, bytecode, abi, inputs, options).send().getContractAddress().then((contractAddress) => {
-    return new SolWrapper(this, abi, contractAddress)
-  })
-}
+Ultralightbeam.prototype.solDeploy = defunction(
+  [v.amorph, v.array, v.array, v.pojo],
+  v.eventualSolWrapper,
+  function solDeploy(bytecode, abi, inputs, options) {
+    return new SolDeployTransactionRequest(this, bytecode, abi, inputs, options).send().getContractAddress().then((contractAddress) => {
+      return new SolWrapper(this, abi, contractAddress)
+    })
+  }
+)
 
-Ultralightbeam.getTransactionRequest = function getTransactionRequest(options) {
-  arguguard('ultralightbeam.getTransactionRequest', ['Object'])
+Ultralightbeam.getTransactionRequest = defunction([v.pojo], v.transactionRequest, function getTransactionRequest(options) {
   return new TransactionRequest(this, options)
-}
+})
 
-Ultralightbeam.prototype.getSolWrapper = function getSolWrapper(bytecode, abi, inputs, options) {
-  arguguard('ultralightbeam.getSolWrapper', ['Amorph', 'Array', 'Array', 'Object'])
-  return new SolDeploy(this, bytecode, abi, inputs, options)
-}
-
-module.exports = Ultralightbeam
+Ultralightbeam.prototype.getSolWrapper = defunction([v.amorph, v.array, v.array, v.pojo], v.solWrapper, function getSolWrapper(bytecode, abi, inputs, options) {
+  return new SolWrapper(this, bytecode, abi, inputs, options)
+})

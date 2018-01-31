@@ -1,6 +1,6 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
-const amorphParseSolcOutput = require('./parseSolcOutput')
+const parseSolcOutput = require('../lib/parseSolcOutput')
 const FailedTransactionError = require('../lib/errors/FailedTransaction')
 
 const badContractSol = `
@@ -12,7 +12,7 @@ const badContractSol = `
   }
 `
 
-const badContractSolInfo = amorphParseSolcOutput(solc.compile(badContractSol, 1)).BadContract
+const badContractSolInfo = parseSolcOutput(solc.compile(badContractSol, 1)).BadContract
 
 describe('badContract', () => {
 

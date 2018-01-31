@@ -3,6 +3,8 @@ const Block = require('../lib/Block')
 const TransactionRequest = require('../lib/TransactionRequest')
 const ultralightbeam = require('./ultralightbeam')
 const accounts = require('./accounts')
+const Amorph = require('amorph')
+const amorphNumber = require('amorph-number')
 
 describe('blockPoller', () => {
 
@@ -14,7 +16,7 @@ describe('blockPoller', () => {
   it('should create dummy transaction', () => {
     dummyTransaction = new TransactionRequest(ultralightbeam, {
       to: accounts[0].address,
-      value: new ultralightbeam.Amorph(1, 'number')
+      value: Amorph.from(amorphNumber.unsigned, 1)
     })
   })
 
@@ -51,7 +53,7 @@ describe('blockPoller', () => {
   })
 
   it('block.number should be blockNumber + 1', () => {
-    block.number.to('number').should.equal(blockNumber.to('number') + 1)
+    block.number.to(amorphNumber.unsigned).should.equal(blockNumber.to(amorphNumber.unsigned) + 1)
   })
 
   it('should send another dummy Transaction', () => {
@@ -63,17 +65,17 @@ describe('blockPoller', () => {
     blocks.should.have.length(2)
     blocks[0].should.be.instanceOf(Block)
     blocks[1].should.be.instanceOf(Block)
-    blocks[0].number.should.amorphTo('number').equal(
-      blockNumber.to('number') + 1
+    blocks[0].number.should.amorphTo(amorphNumber.unsigned).equal(
+      blockNumber.to(amorphNumber.unsigned) + 1
     )
-    blocks[1].number.should.amorphTo('number').equal(
-      blockNumber.to('number') + 2
+    blocks[1].number.should.amorphTo(amorphNumber.unsigned).equal(
+      blockNumber.to(amorphNumber.unsigned) + 2
     )
   })
 
   it('blockPoller.gasPrice should be 2 Szabo', () => {
     const twoSzabo = 20000000000
-    ultralightbeam.blockPoller.gasPrice.should.amorphTo('number').equal(twoSzabo)
+    ultralightbeam.blockPoller.gasPrice.should.amorphTo(amorphNumber.unsigned).equal(twoSzabo)
   })
 
   // ToDo: test gasPrice event (doesn't look like there's a way to trigger it in testrpc)

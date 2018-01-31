@@ -2,7 +2,11 @@ const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
 const stripType = require('../lib/stripType')
 const account = require('./account')
-const amorphParseSolcOutput = require('./parseSolcOutput')
+const parseSolcOutput = require('../lib/parseSolcOutput')
+const amorphHex = require('amorph-hex')
+const amorphAscii = require('amorph-ascii')
+const amorphBoolean = require('amorph-boolean')
+const amorphNumber = require('amorph-number')
 
 const typesContractSol = `
   pragma solidity ^0.4.4;
@@ -23,7 +27,7 @@ const typesContractSol = `
     }
   }`
 
-const typesContractInfo = amorphParseSolcOutput(solc.compile(typesContractSol, 1)).Types
+const typesContractInfo = parseSolcOutput(solc.compile(typesContractSol, 1)).Types
 
 describe('stripType', () => {
   it('should strip "bytes"', () => {
@@ -49,56 +53,42 @@ describe('typesContract', () => {
   })
 
   it('should have correct code', () => {
-    return ultralightbeam.eth.getCode(typesContract.address).should.eventually.amorphEqual(
-      typesContractInfo.runcode, 'hex'
-    )
+    return ultralightbeam.eth.getCode(typesContract.address).should.eventually.amorphEqual(typesContractInfo.runcode)
   })
 
   describe('myAddress', () => {
     it('should be msg.sender', () => {
-      typesContract.fetch('myAddress()', []).should.eventually.amorphEqual(
-        account.address, 'hex'
-      )
+      typesContract.fetch('myAddress()', []).should.eventually.amorphEqual(account.address)
     })
   })
 
   describe('myBool', () => {
     it('should be true', () => {
-      typesContract.fetch('myBool()', []).should.eventually.amorphTo(
-        'boolean'
-      ).equal(true)
+      typesContract.fetch('myBool()', []).should.eventually.amorphTo(amorphBoolean).equal(true)
     })
   })
 
   describe('myBytes', () => {
     it('should be 01', () => {
-      typesContract.fetch('myBytes()', []).should.eventually.amorphTo(
-        'hex'
-      ).equal('01')
+      typesContract.fetch('myBytes()', []).should.eventually.amorphTo(amorphHex.unprefixed).equal('01')
     })
   })
 
   describe('myInt', () => {
     it('should be -2', () => {
-      typesContract.fetch('myInt()', []).should.eventually.amorphTo(
-        'number'
-      ).equal(-2)
+      typesContract.fetch('myInt()', []).should.eventually.amorphTo(amorphNumber.signed).equal(-2)
     })
   })
 
   describe('myString', () => {
     it('should be "3"', () => {
-      typesContract.fetch('myString()', []).should.eventually.amorphTo(
-        'ascii'
-      ).equal('3')
+      typesContract.fetch('myString()', []).should.eventually.amorphTo(amorphAscii).equal('3')
     })
   })
 
   describe('myUint', () => {
     it('should be 4', () => {
-      typesContract.fetch('myUint()', []).should.eventually.amorphTo(
-        'number'
-      ).equal(4)
+      typesContract.fetch('myUint()', []).should.eventually.amorphTo(amorphNumber.unsigned).equal(4)
     })
   })
 

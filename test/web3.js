@@ -1,4 +1,6 @@
 const ultralightbeam = require('./ultralightbeam')
+const Amorph = require('amorph')
+const amorphHex = require('amorph-hex')
 
 describe('web3', () => {
 
@@ -27,18 +29,18 @@ describe('web3', () => {
     let ciphertext
 
     it('should return ciphertext', () => {
-      const plaintext = new ultralightbeam.Amorph('0x68656c6c6f20776f726c64', 'hex.prefixed')
+      const plaintext = Amorph.from(amorphHex.prefixed, '0x68656c6c6f20776f726c64')
       return ultralightbeam.web3.sha3(plaintext).then((_ciphertext) => {
         ciphertext = _ciphertext
       }).should.be.fulfilled
     })
 
     it('ciphertext should be instance of Amorph"', () => {
-      ciphertext.should.be.instanceof(ultralightbeam.Amorph)
+      ciphertext.should.be.instanceof(Amorph)
     })
 
     it('ciphertext should be correct"', () => {
-      ciphertext.to('hex.prefixed').should.equal(
+      ciphertext.to(amorphHex.prefixed).should.equal(
         '0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'
       )
     })

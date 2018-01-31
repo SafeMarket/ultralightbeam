@@ -2,21 +2,23 @@ const Ultralightbeam = require('../')
 const ganache = require('ganache-cli')
 const accounts = require('./accounts')
 const account = require('./account')
-const Amorph = require('amorph')
+const amorphNumber = require('amorph-number')
+const amorphHex = require('amorph-hex')
 
-const gasLimit = 4000000
+const gasLimit = 8000000
 
 const provider = ganache.provider({
+  gasPrice: 20000000000,
   gasLimit: gasLimit,
   blocktime: 2,
   accounts: accounts.map((_account) => {
     return {
-      balance: _account.balance.to('number'),
-      secretKey: _account.privateKey.to('hex.prefixed')
+      balance: _account.balance.to(amorphNumber.unsigned),
+      secretKey: _account.privateKey.to(amorphHex.prefixed)
     }
   })
 })
-const ultralightbeam = new Ultralightbeam(provider, Amorph, {
+const ultralightbeam = new Ultralightbeam(provider, {
   defaultAccount: account
 })
 

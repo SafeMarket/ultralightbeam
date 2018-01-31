@@ -1,7 +1,8 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
-const amorphParseSolcOutput = require('./parseSolcOutput')
-const Amorph = require('./Amorph')
+const parseSolcOutput = require('../lib/parseSolcOutput')
+const Amorph = require('amorph')
+const amorphNumber = require('amorph-number')
 
 const sol = `
   pragma solidity ^0.4.4;
@@ -16,7 +17,7 @@ const sol = `
   }
 `
 
-const info = amorphParseSolcOutput(solc.compile(sol, 1)).Contract
+const info = parseSolcOutput(solc.compile(sol, 1)).Contract
 
 describe('zeroContract', () => {
 
@@ -24,7 +25,7 @@ describe('zeroContract', () => {
   let contract
 
   it('should deploy', () => {
-    return ultralightbeam.solDeploy(info.code, info.abi, [new Amorph(0, 'number')], {}).then((_contract) => {
+    return ultralightbeam.solDeploy(info.code, info.abi, [Amorph.from(amorphNumber.unsigned, 0)], {}).then((_contract) => {
       contract = _contract
     })
   })

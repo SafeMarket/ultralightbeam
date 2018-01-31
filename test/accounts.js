@@ -1,10 +1,9 @@
 const _ = require('lodash')
-const Account = require('ethereum-account-amorph')
-const Amorph = require('./Amorph')
-const random = require('random-amorph')
+const Account = require('../lib/Account')
+const getRandomAmorph = require('../lib/getRandomAmorph')
 
 module.exports = _.range(10).map(() => {
-  const account = Account.generate(Amorph)
-  account.balance = random(Amorph, 16)
+  const account = Account.generate()
+  account.balance = getRandomAmorph(16)
   return account
 })

@@ -1,6 +1,5 @@
 const Q = require('q')
 const ultralightbeam = require('./ultralightbeam')
-const storageContractSol = require('./storageContractSol')
 const storageContractInfo = require('./storageContractInfo')
 const storageContractPromise = require('./storageContract')
 const web3Sha3 = require('web3/lib/utils/sha3')
@@ -10,14 +9,16 @@ const TransactionReceipt = require('../lib/TransactionReceipt')
 const accounts = require('./accounts')
 const account = require('./account')
 const Block = require('../lib/Block')
-const SolidityOutput = require('../lib/SolidityOutput')
 const blockFlags = require('../lib/blockFlags')
+const Amorph = require('amorph')
+const amorphArray = require('amorph-array')
+const amorphHex = require('amorph-hex')
+const amorphNumber = require('amorph-number')
 
 describe('eth', () => {
 
   let blockNumber
   const balances = []
-  let contractAddress1
   let blockByNumber
   let blockByHash
   let blockByFlag
@@ -35,9 +36,9 @@ describe('eth', () => {
     it('should be array of 10 Amorphs', () => {
       balances.should.be.instanceof(Array)
       balances.should.have.length(10)
-      balances.forEach((balance, index) => {
-        balance.should.be.instanceof(ultralightbeam.Amorph)
-        balance.to('number').should.be.gt(0)
+      balances.forEach((balance) => {
+        balance.should.be.instanceof(Amorph)
+        balance.to(amorphNumber.unsigned).should.be.gt(0)
       })
     })
 
@@ -57,24 +58,24 @@ describe('eth', () => {
       return ultralightbeam
         .eth.getStorageAt(
           storageContract.address,
-          new ultralightbeam.Amorph(positionArray, 'array')
+          Amorph.from(amorphArray, positionArray)
         )
-        .should.eventually.amorphTo('number').equal(1234)
+        .should.eventually.amorphTo(amorphNumber.unsigned).equal(1234)
     })
 
     it('should get pos1[msg.sender] ', () => {
       const keyArray = []
         .concat(new Array(12).fill(0))
-        .concat(account.address.to('array'))
+        .concat(account.address.to(amorphArray))
         .concat(new Array(31).fill(0))
         .concat([1])
-      const key = new ultralightbeam.Amorph(keyArray, 'array')
-      const positionHex = web3Sha3(key.to('hex.prefixed'), { encoding: 'hex' })
-      const position = new ultralightbeam.Amorph(positionHex, 'hex')
+      const key = Amorph.from(amorphArray, keyArray)
+      const positionHex = web3Sha3(key.to(amorphHex.prefixed), { encoding: 'hex' })
+      const position = Amorph.from(amorphHex.unprefixed, positionHex)
 
       return ultralightbeam
         .eth.getStorageAt(storageContract.address, position)
-        .should.eventually.amorphTo('number').equal(5678)
+        .should.eventually.amorphTo(amorphNumber.unsigned).equal(5678)
     })
 
   })
@@ -85,21 +86,21 @@ describe('eth', () => {
       return ultralightbeam.eth.getTransactionCount(
           accounts[0].address
         )
-        .should.eventually.be.instanceof(ultralightbeam.Amorph)
+        .should.eventually.be.instanceof(Amorph)
     })
 
     it('account0 should be greater than zero', () => {
       return ultralightbeam.eth.getTransactionCount(
           accounts[0].address
         )
-        .should.eventually.amorphTo('number').be.greaterThan(0)
+        .should.eventually.amorphTo(amorphNumber.unsigned).be.greaterThan(0)
     })
 
     it('account1 should be zero', () => {
       return ultralightbeam.eth.getTransactionCount(
           accounts[1].address
         )
-        .should.eventually.amorphTo('number').equal(0)
+        .should.eventually.amorphTo(amorphNumber.unsigned).equal(0)
     })
 
   })
@@ -116,7 +117,7 @@ describe('eth', () => {
     it('should be empty for account0', () => {
       return ultralightbeam.eth.getCode(
         accounts[0].address
-      ).should.eventually.amorphTo('array').have.length(0)
+      ).should.eventually.amorphTo(amorphArray).have.length(0)
     })
 
     it('should not be empty for storageContract.address ', () => {
@@ -138,7 +139,7 @@ describe('eth', () => {
 
     it('should be 2 Szabo', () => {
       const twoSzabo = 20000000000
-      return ultralightbeam.eth.getGasPrice().should.eventually.amorphTo('number').equal(twoSzabo)
+      return ultralightbeam.eth.getGasPrice().should.eventually.amorphTo(amorphNumber.unsigned).equal(twoSzabo)
     })
 
   })
@@ -149,11 +150,11 @@ describe('eth', () => {
       const transactionRequest = new TransactionRequest(ultralightbeam, {
         from: account,
         to: accounts[1].address,
-        value: new ultralightbeam.Amorph(1, 'number')
+        value: Amorph.from(amorphNumber.unsigned, 1)
       })
       return ultralightbeam.eth.estimateGas(
         transactionRequest
-      ).should.eventually.amorphTo('number').equal(21000)
+      ).should.eventually.amorphTo(amorphNumber.unsigned).equal(21000)
     })
 
   })
@@ -175,8 +176,8 @@ describe('eth', () => {
     })
 
     it('should be an integer', () => {
-      blockNumber.should.be.instanceof(ultralightbeam.Amorph)
-      const remainder = blockNumber.to('number') % 1
+      blockNumber.should.be.instanceof(Amorph)
+      const remainder = blockNumber.to(amorphNumber.unsigned) % 1
       remainder.should.equal(0)
     })
 

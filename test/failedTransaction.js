@@ -1,7 +1,8 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
-const amorphParseSolcOutput = require('./parseSolcOutput')
+const parseSolcOutput = require('../lib/parseSolcOutput')
 const FailedTransactionError = require('../lib/errors/FailedTransaction')
+const amorphBignumber = require('amorph-bignumber')
 
 const oogContractSol =
   `pragma solidity ^0.4.4;
@@ -10,14 +11,14 @@ const oogContractSol =
     uint256 j;
 
     function doThing() {
-      for(uint256 i = 0; i < 100; i++) {
+      for(uint256 i = 0; i < 10; i++) {
         j = i;
       }
     }
 
   }`
 
-const oogContractInfo = amorphParseSolcOutput(solc.compile(oogContractSol, 1)).OOG
+const oogContractInfo = parseSolcOutput(solc.compile(oogContractSol, 1)).OOG
 
 describe('failedTransaction', () => {
 
@@ -38,7 +39,7 @@ describe('failedTransaction', () => {
 
   it('setBlockNumber() with not enough gas should be rejected with FailedTransactionError', () => {
     return oogContract.broadcast('doThing()', [], {
-      gas: gas.as('bignumber', (bignumber) => { return bignumber.minus(1) })
+      gas: gas.as(amorphBignumber.unsigned, (bignumber) => { return bignumber.minus(1) })
     }).getConfirmation().should.be.rejectedWith(FailedTransactionError)
   })
 })

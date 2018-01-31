@@ -1,9 +1,8 @@
 const TransactionRequest = require('../lib/TransactionRequest')
 const accounts = require('./accounts')
-const ArgumentInstanceError = require('arguguard/errors/user/ArgumentInstance')
-const addressValidator = require('../lib/validators/address')
-const transactionRequestFieldValidator = require('../lib/validators/transactionRequestField')
 const ultralightbeam = require('./ultralightbeam')
+const Amorph = require('amorph')
+const amorphHex = require('amorph-hex')
 
 describe('TransactionRequest', () => {
 
@@ -22,13 +21,13 @@ describe('TransactionRequest', () => {
     transactionRequest2 = new TransactionRequest(ultralightbeam, {
       from: accounts[0],
       to: accounts[1].address,
-      data: new ultralightbeam.Amorph('01', 'hex'),
-      nonce: new ultralightbeam.Amorph('01', 'hex')
+      data: Amorph.from(amorphHex.unprefixed, '01'),
+      nonce: Amorph.from(amorphHex.unprefixed, '01')
     })
   })
 
   it('should .toRawSigned()', () => {
-    transactionRequest2.toRawSigned().should.be.instanceof(ultralightbeam.Amorph)
+    transactionRequest2.toRawSigned().should.be.instanceof(Amorph)
   })
 
   it('.toPojo should have keys [from, to, data] ', () => {
@@ -39,27 +38,27 @@ describe('TransactionRequest', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        from: new ultralightbeam.Amorph('01', 'hex')
+        from: Amorph.from(amorphHex.unprefixed, '01')
       }).send()
-    }).should.throw(ArgumentInstanceError)
+    }).should.throw(Error)
   })
 
   it('should throw validation error with bad to', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        to: new ultralightbeam.Amorph('01', 'hex')
+        to: Amorph.from(amorphHex.unprefixed, '01')
       })
-    }).should.throw(addressValidator.Error)
+    }).should.throw(Error)
   })
 
   it('should throw validation error with bogus field', () => {
     (() => {
       // eslint-disable-next-line no-new
       new TransactionRequest(ultralightbeam, {
-        bogus: new ultralightbeam.Amorph('01', 'hex')
+        bogus: Amorph.from(amorphHex.unprefixed, '01')
       })
-    }).should.throw(transactionRequestFieldValidator.Error)
+    }).should.throw(Error)
   })
 
 })

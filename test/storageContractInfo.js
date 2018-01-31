@@ -1,5 +1,5 @@
-const amorphParseSolcOutput = require('./parseSolcOutput')
+const parseSolcOutput = require('../lib/parseSolcOutput')
 const solc = require('solc')
 const storageContractSol = require('./storageContractSol')
 
-module.exports = amorphParseSolcOutput(solc.compile(storageContractSol, 1)).Storage
+module.exports = parseSolcOutput(solc.compile(storageContractSol, 1)).Storage

@@ -1,6 +1,7 @@
 const ultralightbeam = require('./ultralightbeam')
 const solc = require('solc')
-const amorphParseSolcOutput = require('./parseSolcOutput')
+const parseSolcOutput = require('../lib/parseSolcOutput')
+const amorphArray = require('amorph-array')
 
 const loggingContractSol =
   `pragma solidity ^0.4.4;
@@ -11,7 +12,7 @@ const loggingContractSol =
       Hello(block.number, msg.sender);
     }
   }`
-const loggingContractInfo = amorphParseSolcOutput(solc.compile(loggingContractSol, 1)).Logging
+const loggingContractInfo = parseSolcOutput(solc.compile(loggingContractSol, 1)).Logging
 
 describe('loggingContract', () => {
 
@@ -25,9 +26,7 @@ describe('loggingContract', () => {
   })
 
   it('should have correct code', () => {
-    return ultralightbeam.eth.getCode(loggingContract.address).should.eventually.amorphEqual(
-      loggingContractInfo.runcode, 'hex'
-    )
+    return ultralightbeam.eth.getCode(loggingContract.address).should.eventually.amorphEqual(loggingContractInfo.runcode)
   })
 
   it('should call hello', () => {
@@ -42,7 +41,7 @@ describe('loggingContract', () => {
     transactionReceipt.logs.should.be.instanceOf(Array)
     transactionReceipt.logs.should.have.length(1)
     transactionReceipt.logs[0].topics.should.be.instanceOf(Array)
-    transactionReceipt.logs[0].topics[0].to('array').should.have.length(32)
+    transactionReceipt.logs[0].topics[0].to(amorphArray).should.have.length(32)
   })
 
 })

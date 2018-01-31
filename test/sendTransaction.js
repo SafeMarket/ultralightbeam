@@ -6,6 +6,9 @@ const Q = require('q')
 const Transaction = require('../lib/Transaction')
 const TransactionReceipt = require('../lib/TransactionReceipt')
 const TransactionMonitor = require('../lib/TransactionMonitor')
+const Amorph = require('amorph')
+const amorphNumber = require('amorph-number')
+const amorphArray = require('amorph-array')
 
 describe('sendTransaction', () => {
 
@@ -36,7 +39,7 @@ describe('sendTransaction', () => {
     transactionMonitor = new TransactionRequest(ultralightbeam, {
       from: accounts[0],
       to: accounts[1].address,
-      value: new ultralightbeam.Amorph(1, 'number')
+      value: Amorph.from(amorphNumber.unsigned, 1)
     }).send()
   })
 
@@ -51,11 +54,11 @@ describe('sendTransaction', () => {
   })
 
   it('transactionHash should be an Amorph', () => {
-    transactionHash.should.be.instanceof(ultralightbeam.Amorph)
+    transactionHash.should.be.instanceof(Amorph)
   })
 
   it('transactionHash should be 32 bytes long', () => {
-    transactionHash.to('array').should.have.length(32)
+    transactionHash.to(amorphArray).should.have.length(32)
   })
 
   it('transactionPromise should eventually return a Transaction', () => {
@@ -70,8 +73,8 @@ describe('sendTransaction', () => {
 
   it('account1 balance should have increased by 1', () => {
     return ultralightbeam.eth.getBalance(accounts[1].address)
-    .should.eventually.amorphTo('number').equal(
-      balances[1].to('number') + 1
+    .should.eventually.amorphTo(amorphNumber.unsigned).equal(
+      balances[1].to(amorphNumber.unsigned) + 1
     )
   })
 
@@ -80,7 +83,7 @@ describe('sendTransaction', () => {
 
     const transactionRequest = new TransactionRequest(ultralightbeam, {
       data: storageContractInfo.code,
-      gas: new ultralightbeam.Amorph(3141592, 'number')
+      gas: Amorph.from(amorphNumber.unsigned, 3141592)
     })
 
     return transactionRequest.send().getTransactionReceipt().then((
