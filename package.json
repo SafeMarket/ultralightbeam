@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "amorph": "^4.0.1",
+    "amorph-array": "^1.0.0",
     "amorph-ascii": "^1.0.0",
     "amorph-base58": "^1.0.0",
     "amorph-bignumber": "^3.0.0",
