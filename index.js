@@ -11,12 +11,7 @@ const SolDeployTransactionRequest = require('./lib/SolDeployTransactionRequest')
 const SolWrapper = require('./lib/SolWrapper')
 const defunction = require('defunction')
 const v = require('./lib/validates')
-const NoFromError = require('./lib/errors/NoFrom')
-const BalanceTooLowError = require('./lib/errors/BalanceTooLow')
-const ExceedsBlockLimitError = require('./lib/errors/ExceedsBlockLimit')
 const Promise = require('bluebird')
-const amorphHex = require('amorph-hex')
-const amorphBignumber = require('amorph-bignumber')
 
 const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefined, function Ultralightbeam(provider, options) {
 
@@ -25,86 +20,9 @@ const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefin
     maxBlocksToWait: 3,
     executionDebounce: 100,
     gasMultiplier: 1.2,
-    gasCostHook: (gasCost) => {
-      return this.resolve()
-    },
-    transactionHook: (transactionRequest) => {
-
-      if (!transactionRequest.values.from) {
-        throw new NoFromError('Set either transactionRequest.from or ultralightbeam.defaultAccount')
-      }
-
-      let noncePromise
-      let gasPricePromise
-      let gasPromise
-      let gasLimitPromise
-
-      if (transactionRequest.values.nonce) {
-        noncePromise = this.resolve(transactionRequest.values.nonce)
-      } else {
-        noncePromise = this.eth.getTransactionCount(transactionRequest.values.from.address)
-      }
-
-      if (transactionRequest.values.gasPrice) {
-        gasPricePromise = this.resolve(transactionRequest.values.gasPrice)
-      } else {
-        if (this.blockPoller.gasPrice) {
-          gasPricePromise = this.resolve(this.blockPoller.gasPrice)
-        } else {
-          gasPricePromise = this.blockPoller.gasPricePromise
-        }
-      }
-
-      if (transactionRequest.values.gas) {
-        gasPromise = this.resolve(transactionRequest.values.gas)
-      } else {
-        gasPromise = this.eth.estimateGas(transactionRequest).then((gas) => {
-          return gas.as(amorphBignumber.unsigned, (bignumber) => {
-            return bignumber.times(this.options.gasMultiplier).floor()
-          })
-        })
-      }
-
-      if (this.blockPoller.block) {
-        gasLimitPromise = this.resolve(this.blockPoller.block.gasLimit)
-      } else {
-        gasLimitPromise = this.blockPoller.blockPromise.then((block) => {
-          return block.gasLimit
-        })
-      }
-
-      return Promise.all([
-        noncePromise,
-        gasPromise,
-        gasPricePromise,
-        gasLimitPromise,
-        this.eth.getBalance(transactionRequest.values.from.address)
-      ]).then((results) => {
-        const nonce = results[0]
-        const gas = results[1]
-        const gasPrice = results[2]
-        const gasLimit = results[3]
-        const balance = results[4]
-
-        if (gas.to(amorphBignumber.unsigned).gt(gasLimit.to(amorphBignumber.unsigned))) {
-          throw new ExceedsBlockLimitError(`Gas (${gas.to(amorphBignumber.unsigned)}) exceeds block gas limit (${gasLimit.to(amorphBignumber.unsigned)})`)
-        }
-        const gasCost = gas.as(amorphBignumber.unsigned, (bignumber) => {
-          return bignumber.times(gasPrice.to(amorphBignumber.unsigned))
-        })
-
-        if (gasCost.to(amorphBignumber.unsigned).gt(balance.to(amorphBignumber.unsigned))) {
-          throw new BalanceTooLowError(`This transaction costs ${gasCost.to(amorphBignumber.unsigned)} wei. Account ${transactionRequest.values.from.address.to(amorphHex.prefixed)} only has ${balance.to(amorphBignumber.unsigned)} wei.`)
-        }
-
-        return this.options.gasCostHook(gasCost).then(() => {
-          transactionRequest.set('nonce', nonce)
-          transactionRequest.set('gas', gas)
-          transactionRequest.set('gasPrice', gasPrice)
-          return transactionRequest
-        })
-      })
-    }
+    approve: defunction([v.transactionRequestish], v.promise, function approve(transactionRequest) {
+      return Promise.resolve()
+    })
   }
   _.merge(this.options, options)
 
