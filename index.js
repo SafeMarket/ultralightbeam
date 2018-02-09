@@ -12,6 +12,8 @@ const SolWrapper = require('./lib/SolWrapper')
 const defunction = require('defunction')
 const v = require('./lib/validates')
 const Promise = require('bluebird')
+const amorphHex = require('amorph-hex')
+const amorphNumber = require('amorph-number')
 
 const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefined, function Ultralightbeam(provider, options) {
 
@@ -39,6 +41,7 @@ const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefin
 
   this.blockPoller.start(this.options.blockPollerInterval)
   this.emitter = new Emitter
+  this.addressCounters = {}
 })
 
 Ultralightbeam.prototype.execute = defunction([], v.anything, function execute() {
@@ -82,4 +85,33 @@ Ultralightbeam.getTransactionRequest = defunction([v.pojo], v.transactionRequest
 
 Ultralightbeam.prototype.getSolWrapper = defunction([v.amorph, v.array, v.array, v.pojo], v.solWrapper, function getSolWrapper(bytecode, abi, inputs, options) {
   return new SolWrapper(this, bytecode, abi, inputs, options)
+})
+
+Ultralightbeam.prototype.getNonce = defunction([v.address], v.eventualAmorph, function getNonce(address) {
+  const addressHex = address.to(amorphHex.unprefixed)
+
+  if (!this.addressCounters[addressHex]) {
+    this.addressCounters[addressHex] = {
+      startNonce: null,
+      increment: 0
+    }
+  }
+
+  const addressCounter = this.addressCounters[addressHex]
+  const increment = addressCounter.increment
+  addressCounter.increment ++
+
+  if (addressCounter.startNonce) {
+    return this.resolve(addressCounter.startNonce.as(amorphNumber.unsigned, (number) => {
+      return number + increment
+    }))
+  }
+  return this.eth.getTransactionCount(address).then((transactionCount) => {
+    if (!addressCounter.startNonce) {
+      addressCounter.startNonce = transactionCount
+    }
+    return transactionCount.as(amorphNumber.unsigned, (number) => {
+      return number + increment
+    })
+  })
 })

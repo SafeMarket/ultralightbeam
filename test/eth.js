@@ -96,9 +96,9 @@ describe('eth', () => {
         .should.eventually.amorphTo(amorphNumber.unsigned).be.greaterThan(0)
     })
 
-    it('account1 should be zero', () => {
+    it('account9 should be zero', () => {
       return ultralightbeam.eth.getTransactionCount(
-          accounts[1].address
+          accounts[9].address
         )
         .should.eventually.amorphTo(amorphNumber.unsigned).equal(0)
     })
