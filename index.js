@@ -44,6 +44,13 @@ const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefin
   this.addressCounters = {}
 })
 
+Ultralightbeam.prototype.getLatestBlock = defunction([], v.eventualBlock, function getLatestBlock() {
+  if (this.blockPoller.block) {
+    return this.resolve(this.blockPoller.block)
+  }
+  return this.blockPoller.blockPromise
+})
+
 Ultralightbeam.prototype.execute = defunction([], v.anything, function execute() {
   return this.debouncedExecute(this)
 })
