@@ -7,4 +7,4 @@ process.on('uncaughtException', (error) => {
   throw error
 })
 
-require('./blockPoller')
+require('./syncTransactions')
