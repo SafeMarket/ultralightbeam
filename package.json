@@ -20,7 +20,7 @@
     "amorph-parse-solc-output": "^0.1.1",
     "babel-eslint": "^7.2.3",
     "chai": "^3.5.0",
-    "chai-amorph": "^1.0.0",
+    "chai-amorph": "^1.0.2",
     "chai-as-promised": "^6.0.0",
     "chai-web3-bindings": "^0.1.2",
     "colors": "^1.1.2",
@@ -32,7 +32,7 @@
     "glob": "^7.1.1",
     "mocha": "^3.1.2",
     "random-amorph": "^2.0.0",
-    "solc": "0.4.4",
+    "solc": "^0.4.4",
     "time-require": "^0.1.2"
   },
   "dependencies": {
@@ -45,7 +45,6 @@
     "amorph-hex": "^3.0.0",
     "amorph-number": "^2.0.0",
     "bluebird": "^3.5.1",
-    "chai-amorph": "^1.0.0",
     "defunction": "^5.7.0",
     "ethereumjs-testrpc": "^3.0.3",
     "ethjs-signer": "^0.1.1",
@@ -56,7 +55,6 @@
     "nobject": "^0.1.0",
     "q": "^1.4.1",
     "secure-random": "^1.1.1",
-    "solc": "^0.4.4",
     "solidity-sha3": "^0.4.1",
     "testable-error": "^0.1.2",
     "web3": "^1.0.0-beta.27"
