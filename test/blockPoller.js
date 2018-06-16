@@ -57,7 +57,11 @@ describe('blockPoller', () => {
   })
 
   it('should send another dummy Transaction', () => {
-    dummyTransaction.send()
+    const dummyTransaction1 = new TransactionRequest(ultralightbeam, {
+      to: accounts[0].address,
+      value: Amorph.from(amorphNumber.unsigned, 1)
+    })
+    dummyTransaction1.send()
     return ultralightbeam.blockPoller.blockPromise.should.be.fulfilled
   })
 
