@@ -7,6 +7,13 @@ const Amorph = require('amorph')
 
 describe('getLatestBlock', () => {
   let block
+  it('should do a transaction', () => {
+    return (new TransactionRequest(ultralightbeam, {
+      from: accounts[0],
+      to: accounts[1].address,
+      value: Amorph.from(amorphNumber.unsigned, 1)
+    })).send().getConfirmation()
+  })
   it('should getLatestBlock', () => {
     return ultralightbeam.getLatestBlock().then((_block) => {
       _block.should.be.instanceOf(Block)
