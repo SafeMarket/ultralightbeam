@@ -57,6 +57,6 @@
     "secure-random": "^1.1.1",
     "solidity-sha3": "^0.4.1",
     "testable-error": "^0.1.2",
-    "web3": "^1.0.0-beta.27"
+    "web3": "^0.18.4"
   }
 }
