@@ -14,6 +14,7 @@ const v = require('./lib/validates')
 const Promise = require('bluebird')
 const amorphHex = require('amorph-hex')
 const amorphNumber = require('amorph-number')
+const BlocksWaitedError = require('./lib/errors/BlocksWaited')
 
 const Ultralightbeam = module.exports = defunction([v.object, v.pojo], v.undefined, function Ultralightbeam(provider, options) {
 
@@ -121,4 +122,28 @@ Ultralightbeam.prototype.getNonce = defunction([v.address], v.eventualAmorph, fu
       return number + increment
     })
   })
+})
+
+Ultralightbeam.prototype.waitForTransaction = defunction([v.amorph], v.eventualTransaction, function waitForTransaction(transactionHash) {
+  const deferred = this.defer()
+  let blocksWaited = 0
+  const onBlock = (block) => {
+    if (block.transactions) {
+      block.transactions.forEach((transaction) => {
+        if (!transaction.hash.equals(transactionHash)) {
+          return
+        }
+        deferred.resolve(transaction)
+        this.blockPoller.emitter.removeListener('block', onBlock)
+      })
+    }
+    blocksWaited ++
+    if (blocksWaited > this.options.maxBlocksToWait) {
+      this.blockPoller.emitter.removeListener('block', onBlock)
+      const blocksWaitedError = new BlocksWaitedError(`No result after waiting for ${blocksWaited} blocks`)
+      deferred.reject(blocksWaitedError)
+    }
+  }
+  this.blockPoller.emitter.on('block', onBlock)
+  return deferred.promise
 })
