@@ -139,11 +139,34 @@ Ultralightbeam.prototype.waitForTransaction = defunction([v.amorph], v.eventualT
     }
     blocksWaited ++
     if (blocksWaited > this.options.maxBlocksToWait) {
-      this.blockPoller.emitter.removeListener('block', onBlock)
       const blocksWaitedError = new BlocksWaitedError(`No result after waiting for ${blocksWaited} blocks`)
       deferred.reject(blocksWaitedError)
+      this.blockPoller.emitter.removeListener('block', onBlock)
     }
   }
   this.blockPoller.emitter.on('block', onBlock)
+  this.eth.getTransactionByHash(transactionHash).then((transaction) => {
+    if (!transaction) {
+      return
+    }
+    if (
+      this.blockPoller.block &&
+      transaction.blockNumber.to(amorphNumber.unsigned) > this.blockPoller.block.number.to(amorphNumber.unsigned)
+    ) {
+      return
+    }
+    deferred.resolve(transaction)
+    this.blockPoller.emitter.removeListener('block', onBlock)
+  })
   return deferred.promise
+})
+
+Ultralightbeam.prototype.waitForConfirmation = defunction([v.amorph], v.anything, function waitForConfirmation(transactionHash) {
+  return this.waitForTransaction(transactionHash).then((transaction) => {
+    return this.eth.getTransactionReceipt(transaction.hash)
+  }).then((transactionReceipt) => {
+    if (transactionReceipt.isFailed || transactionReceipt.status === 0) {
+      throw new FailedTransactionError('Transaction Failed')
+    }
+  })
 })

@@ -49,7 +49,8 @@ describe('eventsContract', () => {
           ultralightbeam, eventsContractInfo.abi, transactionReceipt.contractAddress
         )
         eventLogs = eventsContract.parseTransactionReceipt(transactionReceipt)
-      }).should.be.fulfilled
+      })
+
     })
 
     it('parsed transaction receipt should be correct', () => {

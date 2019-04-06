@@ -36,11 +36,12 @@ describe('blockPoller', () => {
     })
   })
 
-  it('should wait for promise to be fulfilled', () => {
+  it('should wait for promise to be fulfilled', (done) => {
     ultralightbeam.blockPoller.blockPromise.then((_block) => {
       block = _block
+      done()
     })
-    return dummyTransaction.send().getTransaction()
+    dummyTransaction.send()
   })
 
 
