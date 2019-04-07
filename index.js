@@ -147,10 +147,16 @@ Ultralightbeam.prototype.waitForTransaction = defunction([v.amorph], v.eventualT
   this.blockPoller.emitter.on('block', onBlock)
   this.eth.getTransactionByHash(transactionHash).then((transaction) => {
     if (!transaction) {
+      // transaction has not registered
+      return
+    }
+    if (!transaction.blockNumber) {
+      // transaction has not been mined
       return
     }
     if (
       this.blockPoller.block &&
+      transaction.blockNumber &&
       transaction.blockNumber.to(amorphNumber.unsigned) > this.blockPoller.block.number.to(amorphNumber.unsigned)
     ) {
       return
